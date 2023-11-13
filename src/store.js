@@ -42,18 +42,14 @@ export default new Vuex.Store({
   mutations: {
     authenticate(state, payload) {
       state.isAuthenticated = true;
-
-      localStorage.setItem('token', payload.api_token);
-
+      localStorage.setItem('token', payload.access_token);
+      
       state.user = {
-        id: payload.id,
-        first_name: payload.first_name,
-        last_name: payload.last_name,
-        email: payload.email,
-        timezone: payload.timezone,
-        uuid: payload.uuid,
-        subscribed: payload.subscribed,
-        allow_premium: payload.allow_premium,
+        id: payload.data.id,
+        name: payload.data.name,
+        username: payload.data.username,
+        email: payload.data.email,
+        created_at: payload.data.created_at, 
       };
 
       localStorage.setItem('user', JSON.stringify(state.user))

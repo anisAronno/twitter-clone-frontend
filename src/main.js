@@ -1,6 +1,7 @@
 import axios from "axios"
 import moment from "moment"
 import Vue from 'vue'
+import VueAxios from 'vue-axios'
 import App from './App.vue'
 import './assets/style.css'
 import router from './router'
@@ -8,8 +9,11 @@ import store from './store'
 
 Vue.prototype.moment = moment;
 
+Vue.use(VueAxios, axios);
+
+
 Vue.prototype.$api = function( endpoint ) {
-    return 'http://tweeter.test/' + endpoint;
+    return 'http://twitter.test/' + endpoint;
 };
 
 const token = localStorage.getItem("token");
