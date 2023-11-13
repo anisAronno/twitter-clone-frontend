@@ -4,11 +4,13 @@ import store from './store';
 import Forbidden from './views/Forbidden.vue';
 import Home from './views/Home.vue';
 import Login from './views/Login.vue';
-import Logout from './views/Logout.vue';
 import PageNotFound from './views/PageNotFound.vue';
 import PasswordRecover from './views/PasswordRecover.vue';
 import PasswordReset from './views/PasswordReset.vue';
+import Profile from './views/Profile.vue';
+import ProfileEdit from './views/ProfileEdit.vue';
 import Signup from './views/Signup.vue';
+import HomeLayout from './views/layout/HomeLayout.vue';
 
 
 Vue.use(VueRouter);
@@ -48,23 +50,41 @@ const router = new VueRouter({
       meta: {
         guestOnly: true
       }
-    }, 
+    },
     {
-      path: '/logout',
-      name: 'logout',
-      component: Logout,
-      meta: {
-        requiresAuth: true
-      },
-    },  
-    {
-      path: '/',
-      name: 'home',
-      component: Home,
-      meta: {
-        requiresAuth: true
-      },
-    },  
+        path: '/',
+        component: HomeLayout,
+        meta: {
+            requiresAuth: true,
+        },
+        children: [
+            {
+                path: '',
+                name: 'home',
+                component: Home,
+                meta: {
+                  requiresAuth: true
+                },
+              },  
+              {
+                path: '/profile',
+                name: 'profile',
+                component: Profile,
+                meta: {
+                  requiresAuth: true
+                },
+              },  
+              {
+                path: '/profile-edit',
+                name: 'profileEdit',
+                component: ProfileEdit,
+                meta: {
+                  requiresAuth: true
+                },
+              }, 
+        ],
+    },
+    
     {
       path: "/forbidden",
       name: 'Forbidden',

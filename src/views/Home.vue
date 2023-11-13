@@ -1,9 +1,27 @@
 <template>
-  <h1>Home</h1>
+  <div></div>
 </template>
 
 <script>
-export default {};
+import Header from "@/components/Header.vue";
+export default {
+  components: {
+    Header,
+  },
+};
 </script>
 
-<style></style>
+<style scoped>
+.down::after {
+  content: "\2304";
+  float: right;
+  font-size: 20px;
+  font-weight: 500;
+}
+.up::after {
+  content: "\2303";
+  float: right;
+  font-size: 20px;
+  font-weight: 500;
+}
+</style>

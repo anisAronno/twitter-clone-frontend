@@ -8,8 +8,8 @@ export default new Vuex.Store({
     isAuthenticated: !!localStorage.getItem('token'),
     user: JSON.parse(localStorage.getItem('user')),
     theme: localStorage.getItem('theme') || 'light', 
-    project: {},
-    projects: [],
+    tweet: {},
+    tweets: [],
   },
 
   getters: {
@@ -28,12 +28,12 @@ export default new Vuex.Store({
     theme(state) {
       return state.theme;
     }, 
-    project( state ) {
-      return state.project;
+    tweet( state ) {
+      return state.tweet;
     },
 
-    projects(state) {
-      return state.projects;
+    tweets(state) {
+      return state.tweets;
     },
 
     
@@ -49,6 +49,7 @@ export default new Vuex.Store({
         name: payload.data.name,
         username: payload.data.username,
         email: payload.data.email,
+        image: payload.data.image,
         created_at: payload.data.created_at, 
       };
 
@@ -68,27 +69,25 @@ export default new Vuex.Store({
       localStorage.removeItem('user')
     },
 
-    project( state, payload ) {
-      state.project = payload;
+    tweet( state, payload ) {
+      state.tweet = payload;
     },
 
     updateUser(state, payload) {
       localStorage.removeItem('user')
       state.user = {
-        id: payload.id,
-        first_name: payload.first_name,
-        last_name: payload.last_name,
-        email: payload.email,
-        timezone: payload.timezone,
-        uuid: payload.uuid,
-        subscribed: payload.subscribed,
-        allow_premium: payload.allow_premium,
+        id: payload.data.id,
+        name: payload.data.name,
+        username: payload.data.username,
+        email: payload.data.email,
+        image: payload.data.image,
+        created_at: payload.data.created_at, 
       };
       localStorage.setItem('user', JSON.stringify(state.user))
     },
 
-    projects(state, payload) {
-      state.projects = payload;
+    tweets(state, payload) {
+      state.tweets = payload;
     },
  
 
@@ -108,16 +107,16 @@ export default new Vuex.Store({
       context.commit('logout');
     },
 
-    project( context, payload ) {
-      context.commit( 'project', payload );
+    tweet( context, payload ) {
+      context.commit( 'tweet', payload );
     },
 
     updateUser( context, payload ) {
       context.commit( 'updateUser', payload );
     },
 
-    projects( context, payload ) {
-      context.commit('projects', payload);
+    tweets( context, payload ) {
+      context.commit('tweets', payload);
     },
   }
 });
