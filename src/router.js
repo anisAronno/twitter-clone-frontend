@@ -5,6 +5,7 @@ import Forbidden from './views/Forbidden.vue';
 import Home from './views/Home.vue';
 import Login from './views/Login.vue';
 import PageNotFound from './views/PageNotFound.vue';
+import PasswordEdit from './views/PasswordEdit.vue';
 import PasswordRecover from './views/PasswordRecover.vue';
 import PasswordReset from './views/PasswordReset.vue';
 import Profile from './views/Profile.vue';
@@ -78,6 +79,14 @@ const router = new VueRouter({
                 path: '/profile-edit',
                 name: 'profileEdit',
                 component: ProfileEdit,
+                meta: {
+                  requiresAuth: true
+                },
+              }, 
+              {
+                path: '/password-update',
+                name: 'passwordEdit',
+                component: PasswordEdit,
                 meta: {
                   requiresAuth: true
                 },

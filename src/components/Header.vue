@@ -11,7 +11,7 @@
     <div v-if="user" class="flex-none">
       <div
         class="cursor-pointer relative duration-500 hover:scale-105"
-        @click="isToggleOpen = !isToggleOpen"
+        @click="toggleDropdown"
       >
         <img
           v-if="user.image"
@@ -26,10 +26,15 @@
       </div>
       <div :class="{ hidden: !isToggleOpen }" class="relative">
         <ul
-          class="absolute right-0 top-30 w-24 text-right space-y-2 pt-3 dark:bg-gray-800 dark:text-white p-2 mt-2"
+          class="absolute right-0 top-30 w-48 text-right space-y-2 pt-3 dark:bg-gray-800 dark:text-white p-2 mt-2"
         >
-          <li class="duration-500 hover:scale-105">
+          <li class="cursor-pointer duration-500 hover:scale-105">
             <router-link :to="{ name: 'profile' }">Account</router-link>
+          </li>
+          <li class="cursor-pointer duration-500 hover:scale-105">
+            <router-link :to="{ name: 'passwordEdit' }"
+              >Reset Password</router-link
+            >
           </li>
           <li
             @click.prevent="logout"
@@ -75,6 +80,22 @@ export default {
         .catch((error) => {
           this.$notification(error?.message ?? "Something went wrong!!");
         });
+    },
+    toggleDropdown() {
+      this.isToggleOpen = !this.isToggleOpen;
+
+      if (this.isToggleOpen) {
+        document.addEventListener("click", this.closeDropdown);
+      } else {
+        document.removeEventListener("click", this.closeDropdown);
+      }
+    },
+    closeDropdown(event) {
+      const dropdown = this.$el.querySelector(".cursor-pointer");
+      if (!dropdown.contains(event.target)) {
+        this.isToggleOpen = false;
+        document.removeEventListener("click", this.closeDropdown);
+      }
     },
   },
 };
