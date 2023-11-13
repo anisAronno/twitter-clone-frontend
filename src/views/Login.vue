@@ -7,7 +7,7 @@
       <form class="space-y-6 mt-5" @submit.prevent="login">
         <h5 class="heading">Login to Your Account</h5>
         <div>
-          <label for="email" class="label">Your email</label>
+          <label for="email" class="label">Your email:</label>
           <input
             type="text"
             name="email"
@@ -24,7 +24,7 @@
           </div>
         </div>
         <div>
-          <label for="password" class="label">Your password</label>
+          <label for="password" class="label">Your password: </label>
           <input
             type="password"
             name="password"
@@ -56,7 +56,7 @@
               >Remember me</label
             >
           </div>
-          <router-link :to="{ name: 'forgetPassword' }" class="login-link"
+          <router-link :to="{ name: 'passwordRecover' }" class="login-link"
             >Lost Password?</router-link
           >
         </div>
@@ -64,6 +64,14 @@
           <span v-if="!isSaved">Login to your account</span>
           <ButtonSpiner v-else>Processing... </ButtonSpiner>
         </button>
+        <div>
+          <span class="inline-block mr-2 dark:text-white text-gray-900"
+            >Need an account?</span
+          >
+          <router-link :to="{ name: 'signup' }" class="login-link !text-lg"
+            >Signup</router-link
+          >
+        </div>
       </form>
     </div>
   </div>
@@ -84,9 +92,8 @@ export default {
     return {
       isSaved: false,
       loginForm: {
-        email: "mthompson@example.net",
-        username: "anisaronno",
-        password: "password",
+        email: "",
+        password: "",
       },
       err: {},
     };
@@ -106,27 +113,30 @@ export default {
       this.$http
         .post(this.$api("api/login"), this.loginForm)
         .then((response) => {
-          if (response.data) {
+          if (response.data.access_token) {
             this.isSaved = true;
 
             this.$store.dispatch("login", response.data);
             this.$http.defaults.headers.common["Authorization"] =
-              "Bearer " + response.data.api_token;
+              "Bearer " + response.data.access_token;
 
-            if (
-              this.$route.query.redirect &&
-              this.$route.query.redirect != "/logout"
-            ) {
-              this.$router.push({ path: this.$route.query.redirect });
-            } else {
-              this.$router.push({ path: "/" });
-            }
+            this.$notification("Login successful.", response.data.success);
+            this.$router.push({ path: "/" });
+          } else {
+            this.$notification(response.data.message, response.data.success);
           }
         })
         .catch((error) => {
-          this.err = error.message;
+          this.err = error?.response?.data?.errors
+            ? error?.response?.data?.errors
+            : [];
+          this.$notification(
+            error?.response?.data?.errors
+              ? error?.response?.data?.message
+              : error?.message ?? "The given data was invalid!"
+          );
         })
-        .then(() => {
+        .finally(() => {
           this.isSaved = false;
         });
     },

@@ -6,6 +6,8 @@ import Home from './views/Home.vue';
 import Login from './views/Login.vue';
 import Logout from './views/Logout.vue';
 import PageNotFound from './views/PageNotFound.vue';
+import PasswordRecover from './views/PasswordRecover.vue';
+import PasswordReset from './views/PasswordReset.vue';
 import Signup from './views/Signup.vue';
 
 
@@ -19,14 +21,26 @@ const router = new VueRouter({
       path: '/login',
       name: 'login',
       component: Login,
-   
+      meta: {
+        guestOnly: true
+      }
     }, 
     {
-      path: '/forgetPassword',
-      name: 'forgetPassword',
-      component: Login,
-   
-    }, 
+      path: '/password-forget',
+      name: 'passwordRecover',
+      component: PasswordRecover,
+      meta: {
+        guestOnly: true
+      }
+    },
+    {
+      path: '/password-reset',
+      name: 'passwordReset',
+      component: PasswordReset,
+      meta: {
+        guestOnly: true
+      }
+    },
     {
       path: '/signup',
       name: 'signup',

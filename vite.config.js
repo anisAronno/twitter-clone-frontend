@@ -1,5 +1,5 @@
 // vite.config.js
-import vue from '@vitejs/plugin-vue2'
+import vue from '@vitejs/plugin-vue2';
 import path from 'path';
 
 export default {
@@ -8,5 +8,8 @@ export default {
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },
+  },
+  server: {
+    port: 9999,
   },
 }

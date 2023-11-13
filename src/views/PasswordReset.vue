@@ -4,25 +4,8 @@
       <div class="w-full grid h-full place-items-center">
         <User class="avatar p-3 w-32"></User>
       </div>
-      <form class="space-y-6 mt-5" @submit.prevent="register">
+      <form class="space-y-6 mt-5" @submit.prevent="passwordReset">
         <h5 class="heading">Create a new Account</h5>
-        <div>
-          <label for="email" class="label">Your Name:</label>
-          <input
-            type="text"
-            name="name"
-            id="name"
-            class="form-controll"
-            :class="{ 'border-red': err?.name }"
-            placeholder="name@company.com"
-            v-model="signupForm.name"
-          />
-          <div class="error" v-if="err?.name">
-            <p v-for="(err, i) in err.name" :key="i">
-              {{ err }}
-            </p>
-          </div>
-        </div>
         <div>
           <label for="email" class="label">Your email:</label>
           <input
@@ -32,7 +15,7 @@
             class="form-controll"
             :class="{ 'border-red': err?.email }"
             placeholder="name@company.com"
-            v-model="signupForm.email"
+            v-model="resetPasswordForm.email"
           />
           <div class="error" v-if="err?.email">
             <p v-for="(err, i) in err.email" :key="i">
@@ -40,23 +23,7 @@
             </p>
           </div>
         </div>
-        <div>
-          <label for="email" class="label">Your username:</label>
-          <input
-            type="text"
-            name="username"
-            id="username"
-            class="form-controll"
-            :class="{ 'border-red': err?.username }"
-            placeholder="name@company.com"
-            v-model="signupForm.username"
-          />
-          <div class="error" v-if="err?.username">
-            <p v-for="(err, i) in err.username" :key="i">
-              {{ err }}
-            </p>
-          </div>
-        </div>
+
         <div>
           <label for="password" class="label">Your password: </label>
           <input
@@ -65,7 +32,7 @@
             id="password"
             placeholder="••••••••"
             class="form-controll"
-            v-model="signupForm.password"
+            v-model="resetPasswordForm.password"
             :class="{ 'border-red': err?.password }"
           />
           <div class="error" v-if="err?.password">
@@ -83,7 +50,7 @@
             type="password"
             name="password_confirmation"
             id="password_confirmation"
-            v-model="signupForm.password_confirmation"
+            v-model="resetPasswordForm.password_confirmation"
             placeholder="••••••••"
             class="form-controll"
             :class="{ 'border-red': err?.password_confirmation }"
@@ -119,7 +86,7 @@
 import ButtonSpiner from "@/components/ButtonSpiner.vue";
 import User from "@/components/User.vue";
 import useVuelidate from "@vuelidate/core";
-import { signupRules } from "@/validation/rules/signupRules";
+import { resetPasswordRules } from "@/validation/rules/resetPasswordRules";
 import parseError from "../helper/parseError";
 
 export default {
@@ -130,10 +97,9 @@ export default {
   data() {
     return {
       isSaved: false,
-      signupForm: {
-        name: "",
-        email: "",
-        username: "",
+      resetPasswordForm: {
+        email: this.$route.query.email || "",
+        token: this.$route.query.token || "",
         password: "",
         password_confirmation: "",
       },
@@ -141,9 +107,16 @@ export default {
     };
   },
 
+  mounted() {
+    const token = this.$route.query.token;
+    const email = this.$route.query.email;
+    console.log("Token:", token);
+    console.log("Email:", email);
+  },
+
   methods: {
-    async register() {
-      let v$ = useVuelidate(signupRules, this.signupForm);
+    async passwordReset() {
+      let v$ = useVuelidate(resetPasswordRules, this.resetPasswordForm);
       let isValidate = await v$.value.$validate();
 
       if (!isValidate) {
@@ -153,7 +126,7 @@ export default {
       }
 
       this.$http
-        .post(this.$api("api/register"), this.signupForm)
+        .post(this.$api("api/password-reset"), this.resetPasswordForm)
         .then((response) => {
           if (response.data.access_token) {
             this.isSaved = true;
@@ -163,7 +136,7 @@ export default {
               "Bearer " + response.data.access_token;
 
             this.$notification(
-              "Account Created successfully.",
+              "Password reset successfully.",
               response.data.success
             );
             this.$router.push({ path: "/" });

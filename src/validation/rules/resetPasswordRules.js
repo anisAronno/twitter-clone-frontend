@@ -1,6 +1,7 @@
-import { required } from "@vuelidate/validators";
+import { email, required } from "@vuelidate/validators";
 export const resetPasswordRules = {
-  old_password: { required },
+  email: { required, email },
   password: { required },
+  token: { required },
   password_confirmation: { required },
 };
