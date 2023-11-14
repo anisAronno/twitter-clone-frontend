@@ -1,12 +1,16 @@
 <template>
-  <div></div>
+  <div>
+    <Tweets />
+  </div>
 </template>
 
 <script>
 import Header from "@/components/Header.vue";
+import Tweets from "@/components/Tweets.vue";
 export default {
   components: {
     Header,
+    Tweets,
   },
 };
 </script>

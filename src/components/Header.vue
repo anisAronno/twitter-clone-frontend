@@ -1,50 +1,53 @@
 <template>
   <div
-    class="flex justify-between items-center gap-3 h-16 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-white"
+    class="flex justify-between items-center gap-3 h-20 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-white"
   >
-    <div class="logo flex-auto p-2">
+    <div class="logo flex-none p-2">
       <router-link :to="{ name: 'home' }">
         <img class="w-12 h-12" src="@/assets/logo.png" alt="Logo" />
       </router-link>
     </div>
-    <div class="flex-none">
-      <DarkMode></DarkMode>
+    <div aria-label="searchbox flex-auto  " v-if="$store.getters.isAuthenticated">
+      <div class="md:w-96"><Search /></div>
     </div>
-    <div v-if="$store.getters.isAuthenticated" class="flex-none">
-      <div
-        class="cursor-pointer relative duration-500 hover:scale-105"
-        @click="toggleDropdown"
-      >
-        <img
-          v-if="user.image"
-          :src="user.image"
-          alt="Logo"
-          class="w-8 h-8 rounded-full ring-1 ring-[#7CA2FF] ring-offset-2"
-        />
-        <User
-          v-else
-          class="avatar w-8 h-8 rounded-full ring-1 ring-[#7CA2FF] ring-offset-2"
-        ></User>
-      </div>
-      <div :class="{ hidden: !isToggleOpen }" class="relative">
-        <ul
-          class="absolute right-0 top-30 w-48 text-right space-y-2 pt-3 dark:bg-gray-800 dark:text-white p-2 mt-2"
+    <div class="flex flex-none gap-5 pr-3">
+      <DarkMode></DarkMode>
+      <div v-if="$store.getters.isAuthenticated">
+        <div
+          class="cursor-pointer relative duration-500 hover:scale-105"
+          @click="toggleDropdown"
         >
-          <li class="cursor-pointer duration-500 hover:scale-105">
-            <router-link :to="{ name: 'profile' }">Account</router-link>
-          </li>
-          <li class="cursor-pointer duration-500 hover:scale-105">
-            <router-link :to="{ name: 'passwordEdit' }"
-              >Reset Password</router-link
-            >
-          </li>
-          <li
-            @click.prevent="logout"
-            class="cursor-pointer text-red-500 duration-500 hover:scale-105"
+          <img
+            v-if="user.image"
+            :src="user.image"
+            alt="Logo"
+            class="w-8 h-8 rounded-full ring-1 ring-[#7CA2FF] ring-offset-2"
+          />
+          <User
+            v-else
+            class="avatar w-8 h-8 rounded-full ring-1 ring-[#7CA2FF] ring-offset-2"
+          ></User>
+        </div>
+        <div :class="{ hidden: !isToggleOpen }" class="relative">
+          <ul
+            class="absolute right-0 top-30 w-36 text-right space-y-2 pt-3 bg-gray-600 dark:bg-gray-800 text-white p-2 mt-2"
           >
-            Logout
-          </li>
-        </ul>
+            <li class="cursor-pointer duration-500 hover:scale-105">
+              <router-link :to="{ name: 'profile' }">Account</router-link>
+            </li>
+            <li class="cursor-pointer duration-500 hover:scale-105">
+              <router-link :to="{ name: 'passwordEdit' }"
+                >Reset Password</router-link
+              >
+            </li>
+            <li
+              @click.prevent="logout"
+              class="cursor-pointer text-red-500 duration-500 hover:scale-105"
+            >
+              Logout
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -53,11 +56,13 @@
 <script>
 import DarkMode from "./DarkMode.vue";
 import User from "./User.vue";
+import Search from "./Search.vue";
 
 export default {
   components: {
     DarkMode,
     User,
+    Search,
   },
   data() {
     return {

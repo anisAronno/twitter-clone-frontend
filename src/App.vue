@@ -9,7 +9,7 @@
       </span>
     </div>
     <Header></Header>
-    <router-view @back="back" @loaded="loaded"></router-view>
+    <router-view  @loaded="loaded"></router-view>
   </div>
 </template>
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="min-w-full pt-10 dark:text-white" v-if="user.id">
+  <div class="max-w-2xl pt-10 dark:text-white" v-if="user.id">
     <div class="sm:px-6">
       <div class="flex justify-center relative">
         <img
@@ -66,6 +66,24 @@
           <dt class="profile-label">Email</dt>
           <dd class="profile-description">
             {{ user.email }}
+          </dd>
+        </div>
+        <div class="profile-item">
+          <dt class="profile-label">Total Tweets</dt>
+          <dd class="profile-description">
+            {{ user.tweets_count }}
+          </dd>
+        </div>
+        <div class="profile-item">
+          <dt class="profile-label">Total Followers</dt>
+          <dd class="profile-description">
+            {{ user.followers_count }}
+          </dd>
+        </div>
+        <div class="profile-item">
+          <dt class="profile-label">Total Following</dt>
+          <dd class="profile-description">
+            {{ user.following_count }}
           </dd>
         </div>
       </dl>

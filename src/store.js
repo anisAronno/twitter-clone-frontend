@@ -8,8 +8,9 @@ export default new Vuex.Store({
     isAuthenticated: !!localStorage.getItem('token'),
     user: JSON.parse(localStorage.getItem('user')),
     theme: localStorage.getItem('theme') || 'light', 
-    tweet: {},
-    tweets: [],
+    followingTweets: {},
+    tweets: {},
+    tweetsByUserName: {},
   },
 
   getters: {
@@ -28,12 +29,16 @@ export default new Vuex.Store({
     theme(state) {
       return state.theme;
     }, 
-    tweet( state ) {
-      return state.tweet;
+    followingTweets( state ) {
+      return state.followingTweets;
     },
 
     tweets(state) {
       return state.tweets;
+    },
+
+    tweetsByUserName(state) {
+      return state.tweetsByUserName;
     },
 
     
@@ -50,6 +55,9 @@ export default new Vuex.Store({
         username: payload.data.username,
         email: payload.data.email,
         image: payload.data.image,
+        tweets_count: payload.data.tweets_count,
+        followers_count: payload.data.followers_count,
+        following_count: payload.data.following_count,
         created_at: payload.data.created_at, 
       };
 
@@ -69,9 +77,6 @@ export default new Vuex.Store({
       localStorage.removeItem('user')
     },
 
-    tweet( state, payload ) {
-      state.tweet = payload;
-    },
 
     updateUser(state, payload) {
       localStorage.removeItem('user')
@@ -81,13 +86,25 @@ export default new Vuex.Store({
         username: payload.data.username,
         email: payload.data.email,
         image: payload.data.image,
+        tweets_count: payload.data.tweets_count,
+        followers_count: payload.data.followers_count,
+        following_count: payload.data.following_count,
         created_at: payload.data.created_at, 
       };
       localStorage.setItem('user', JSON.stringify(state.user))
     },
 
+
+    followingTweets( state, payload ) {
+        state.followingTweets = payload;
+    },
+
     tweets(state, payload) {
       state.tweets = payload;
+    },
+ 
+    tweetsByUserName(state, payload) {
+      state.tweetsByUserName = payload;
     },
  
 
@@ -107,16 +124,20 @@ export default new Vuex.Store({
       context.commit('logout');
     },
 
-    tweet( context, payload ) {
-      context.commit( 'tweet', payload );
-    },
-
     updateUser( context, payload ) {
       context.commit( 'updateUser', payload );
     },
+    
+    followingTweets( context, payload ) {
+      context.commit( 'followingTweets', payload );
+    },
 
     tweets( context, payload ) {
-      context.commit('tweets', payload);
+        context.commit('tweets', payload);
+    },
+
+    tweetsByUserName( context, payload ) {
+        context.commit('tweetsByUserName', payload);
     },
   }
 });
