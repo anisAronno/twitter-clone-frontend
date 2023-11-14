@@ -8,15 +8,18 @@
         <Loader></Loader>
       </span>
     </div>
-    <router-view @loaded="loaded"></router-view>
+    <Header></Header>
+    <router-view @back="back" @loaded="loaded"></router-view>
   </div>
 </template>
 <script>
 import Loader from "@/components/Loader.vue";
+import Header from "@/components/Header.vue";
 
 export default {
   components: {
     Loader,
+    Header,
   },
   data() {
     return {

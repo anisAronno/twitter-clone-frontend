@@ -137,7 +137,7 @@ export default {
         })
         .catch((error) => {
           this.$notification(
-            error?.response?.data?.errors
+            error?.response?.data
               ? error?.response?.data?.message
               : error?.message ?? "The given data was invalid!"
           );

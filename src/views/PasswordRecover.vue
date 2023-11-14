@@ -1,5 +1,5 @@
 <template>
-  <div class="grid h-screen place-items-center dark:bg-gray-900">
+  <div class="grid min-h-screen max-h-full place-items-center dark:bg-gray-900">
     <div class="card max-w-sm">
       <div class="w-full grid h-full place-items-center">
         <User class="avatar p-3 w-32"></User>
@@ -29,10 +29,21 @@
           <ButtonSpiner v-else>Processing... </ButtonSpiner>
         </button>
 
-        <div class="flex items-start">
-          <router-link :to="{ name: 'login' }" class="login-link"
-            >Login</router-link
-          >
+        <div class="flex justify-between w-full">
+          <div>
+            <router-link
+              :to="{ name: 'login' }"
+              class="login-link font-medium"
+              >Login</router-link
+            >
+          </div>
+          <div>
+            <router-link
+              :to="{ name: 'signup' }"
+              class="login-link font-medium"
+              >Signup</router-link
+            >
+          </div>
         </div>
       </form>
     </div>
@@ -96,7 +107,7 @@ export default {
             ? error?.response?.data?.errors
             : [];
           this.$notification(
-            error?.response?.data?.errors
+            error?.response?.data
               ? error?.response?.data?.message
               : error?.message ?? "The given data was invalid!"
           );

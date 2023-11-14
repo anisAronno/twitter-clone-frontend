@@ -1,7 +1,6 @@
 <template>
   <section class="p-5 dark:bg-gray-900 bg-white min-h-screen">
     <div>
-      <Header></Header>
 
       <div class="content-area">
         <router-view @back="back" @loaded="loaded"></router-view>

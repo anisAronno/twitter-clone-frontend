@@ -1,14 +1,16 @@
 <template>
-  <div class="flex justify-between items-center gap-3 h-8">
-    <div class="logo flex-auto">
+  <div
+    class="flex justify-between items-center gap-3 h-16 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-white"
+  >
+    <div class="logo flex-auto p-2">
       <router-link :to="{ name: 'home' }">
-        <img class="w-20 h-20" src="@/assets/logo.png" alt="Logo" />
+        <img class="w-12 h-12" src="@/assets/logo.png" alt="Logo" />
       </router-link>
     </div>
     <div class="flex-none">
       <DarkMode></DarkMode>
     </div>
-    <div v-if="user" class="flex-none">
+    <div v-if="$store.getters.isAuthenticated" class="flex-none">
       <div
         class="cursor-pointer relative duration-500 hover:scale-105"
         @click="toggleDropdown"
