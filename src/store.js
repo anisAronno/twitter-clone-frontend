@@ -11,6 +11,7 @@ export default new Vuex.Store({
     followingTweets: {},
     tweets: {},
     tweetsByUserName: {},
+    searchingUserName: '',
   },
 
   getters: {
@@ -39,6 +40,10 @@ export default new Vuex.Store({
 
     tweetsByUserName(state) {
       return state.tweetsByUserName;
+    },
+
+    searchingUserName(state) {
+      return state.searchingUserName;
     },
 
     
@@ -106,6 +111,10 @@ export default new Vuex.Store({
     tweetsByUserName(state, payload) {
       state.tweetsByUserName = payload;
     },
+
+    searchingUserName(state, payload) {
+      state.searchingUserName = payload;
+    },
  
 
   }, // mutations
@@ -138,6 +147,10 @@ export default new Vuex.Store({
 
     tweetsByUserName( context, payload ) {
         context.commit('tweetsByUserName', payload);
+    },
+    
+    searchingUserName( context, payload ) {
+        context.commit('searchingUserName', payload);
     },
   }
 });

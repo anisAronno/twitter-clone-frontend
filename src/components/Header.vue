@@ -7,8 +7,11 @@
         <img class="w-12 h-12" src="@/assets/logo.png" alt="Logo" />
       </router-link>
     </div>
-    <div aria-label="searchbox flex-auto  " v-if="$store.getters.isAuthenticated">
-      <div class="md:w-96"><Search /></div>
+    <div
+      aria-label="searchbox flex-auto  "
+      v-if="$store.getters.isAuthenticated"
+    >
+      <div class="md:w-96" v-if="$route.name == 'home'"><Search /></div>
     </div>
     <div class="flex flex-none gap-5 pr-3">
       <DarkMode></DarkMode>

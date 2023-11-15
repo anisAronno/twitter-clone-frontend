@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid place-items-center pt-5 dark:text-white max-w-2xl"
+    class="grid place-items-center pt-10 text-gray-900 bg-white dark:text-white dark:bg-gray-900"
     v-if="user.id"
   >
     <div class="card max-w-2xl relative">

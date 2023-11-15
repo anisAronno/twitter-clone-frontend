@@ -11,6 +11,7 @@ import PasswordReset from './views/PasswordReset.vue';
 import Profile from './views/Profile.vue';
 import ProfileEdit from './views/ProfileEdit.vue';
 import Signup from './views/Signup.vue';
+import UserProfile from './views/UserProfile.vue';
 import HomeLayout from './views/layout/HomeLayout.vue';
 
 
@@ -71,6 +72,14 @@ const router = new VueRouter({
                 path: '/profile',
                 name: 'profile',
                 component: Profile,
+                meta: {
+                  requiresAuth: true
+                },
+              },  
+              {
+                path: '/profile/:id',
+                name: 'userProfile',
+                component: UserProfile,
                 meta: {
                   requiresAuth: true
                 },

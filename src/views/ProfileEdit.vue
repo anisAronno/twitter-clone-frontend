@@ -1,9 +1,9 @@
 <template>
   <div
-    class="grid place-items-center pt-5 dark:text-white max-w-2xl"
+    class="grid place-items-center pt-10 text-gray-900 bg-white dark:text-white dark:bg-gray-900"
     v-if="user.id"
   >
-    <div class="card w-full relative">
+    <div class="card max-w-2xl w-full relative">
       <div class="absolute right-1 top-0 text-dark dark:text-white">
         <span @click="$emit('back')" class="back-btn">&#8592;</span>
       </div>
