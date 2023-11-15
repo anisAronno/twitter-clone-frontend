@@ -1,5 +1,5 @@
 <template>
-  <div class="grid place-items-center">
+  <div class="grid place-items-center sm:max-w-min lg:max-w-max">
     <form
       @submit.prevent="submitTweet"
       class="flex flex-col md:flex-row gap-5 items-center mx-auto"
@@ -8,11 +8,14 @@
         name="content"
         id="content"
         cols="30"
-        rows="2"
+        rows="1"
         class="form-controll flex-none"
         v-model="content"
       ></textarea>
-      <button type="submit" class="btn-primary flex-auto h-10 !w-32 z-50">
+      <button
+        type="submit"
+        class="btn-primary flex-auto h-8 flex items-center !w-20 !md:w-32 z-50"
+      >
         Tweet
       </button>
     </form>

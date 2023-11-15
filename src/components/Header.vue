@@ -1,20 +1,20 @@
 <template>
   <div
-    class="!min-w-full grid grid-cols-12 justify-end items-center gap-3 h-20 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-white"
+    class="!min-w-full flex flex-wrap justify-between items-center gap-2 md:gap-5 max-h-fit md:h-20 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-white"
   >
-    <div class="logo col-span-1 p-2">
+    <div class="logo md:flex-auto p-2 order-1">
       <router-link :to="{ name: 'home' }">
         <img class="w-12 h-12" src="@/assets/logo.png" alt="Logo" />
       </router-link>
     </div>
 
-    <div class="col-span-3">
-      <div class="md:w-60" v-if="$route.name == 'home'"><Search /></div>
+    <div class="order-2 md:order-3">
+      <div class="w-44 md:w-60" v-if="$route.name == 'home'"><Search /></div>
     </div>
-    <div class="col-span-3">
+    <div class="order-last md:order-2 flex-grow mb-2 md:0">
       <TweetForm v-if="$route.name == 'home'" />
     </div>
-    <div class="flex col-span-5 gap-5 pr-3 justify-end">
+    <div class="flex order-3 md:order-4 gap-2 md:gap-5 pr-3 justify-end">
       <DarkMode></DarkMode>
       <div v-if="$store.getters.isAuthenticated">
         <div

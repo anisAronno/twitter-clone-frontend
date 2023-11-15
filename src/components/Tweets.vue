@@ -1,5 +1,5 @@
 <template>
-  <div class="p-1 relative min-w-full">
+  <div class="p-1 relative min-w-full !mb-20 md:mb-0">
     <div v-if="Object.keys(allTweets).length > 0 && apiResponsed">
       <div
         v-if="
