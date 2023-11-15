@@ -54,20 +54,7 @@
           class="font-normal text-blue-600"
           :to="{ name: 'profileEdit', params: { userId: user.id } }"
         >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-            ></path>
-          </svg>
+          <EditIcon class="w-6 h-6" />
         </router-link>
       </h1>
     </div>
@@ -101,6 +88,7 @@
 
 <script>
 import Header from "@/components/Header.vue";
+import EditIcon from "@/components/EditIcon.vue";
 import ImageLoader from "@/components/ImageLoader.vue";
 import Tweets from "@/components/Tweets.vue";
 
@@ -109,6 +97,7 @@ export default {
     Header,
     ImageLoader,
     Tweets,
+    EditIcon,
   },
 
   data() {

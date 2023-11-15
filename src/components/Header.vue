@@ -1,19 +1,20 @@
 <template>
   <div
-    class="flex justify-between items-center gap-3 h-20 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-white"
+    class="!min-w-full grid grid-cols-12 justify-end items-center gap-3 h-20 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-white"
   >
-    <div class="logo flex-none p-2">
+    <div class="logo col-span-1 p-2">
       <router-link :to="{ name: 'home' }">
         <img class="w-12 h-12" src="@/assets/logo.png" alt="Logo" />
       </router-link>
     </div>
-    <div
-      aria-label="searchbox flex-auto  "
-      v-if="$store.getters.isAuthenticated"
-    >
-      <div class="md:w-96" v-if="$route.name == 'home'"><Search /></div>
+
+    <div class="col-span-3">
+      <div class="md:w-60" v-if="$route.name == 'home'"><Search /></div>
     </div>
-    <div class="flex flex-none gap-5 pr-3">
+    <div class="col-span-3">
+      <TweetForm />
+    </div>
+    <div class="flex col-span-5 gap-5 pr-3 justify-end">
       <DarkMode></DarkMode>
       <div v-if="$store.getters.isAuthenticated">
         <div
@@ -60,12 +61,14 @@
 import DarkMode from "./DarkMode.vue";
 import User from "./User.vue";
 import Search from "./Search.vue";
+import TweetForm from "./TweetForm.vue";
 
 export default {
   components: {
     DarkMode,
     User,
     Search,
+    TweetForm,
   },
   data() {
     return {

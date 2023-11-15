@@ -10,6 +10,7 @@ import PasswordRecover from './views/PasswordRecover.vue';
 import PasswordReset from './views/PasswordReset.vue';
 import Profile from './views/Profile.vue';
 import ProfileEdit from './views/ProfileEdit.vue';
+import TweetEdit from './views/TweetEdit.vue';
 import Signup from './views/Signup.vue';
 import UserProfile from './views/UserProfile.vue';
 import HomeLayout from './views/layout/HomeLayout.vue';
@@ -80,6 +81,14 @@ const router = new VueRouter({
                 path: '/profile/:id',
                 name: 'userProfile',
                 component: UserProfile,
+                meta: {
+                  requiresAuth: true
+                },
+              },  
+              {
+                path: '/tweet/:id',
+                name: 'tweetEdit',
+                component: TweetEdit,
                 meta: {
                   requiresAuth: true
                 },

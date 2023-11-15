@@ -123,6 +123,7 @@ export default {
   },
   methods: {
     profileSubmit() {
+      this.isLoading = false;
       this.$http
         .post(
           this.$api(`api/profile-update/${this.userData.id}`),

@@ -43,7 +43,25 @@
               class="text-lg"
               >{{ tweet.user.name }}</router-link
             >
-            <div class="text-lg" v-if="tweet.user?.id != auth?.id">
+            <div v-if="tweet.user?.id == auth?.id">
+              <span
+                class="flex justify-center items-center h-full heading gap-2"
+              >
+                <router-link
+                  class="font-normal text-blue-600"
+                  :to="{ name: 'tweetEdit', params: { id: tweet.id } }"
+                >
+                  <EditIcon class="w-6 h-6" />
+                </router-link>
+                <span
+                  @click="deleteTweet(tweet.id)"
+                  class="font-normal text-blue-600 cursor-pointer"
+                >
+                  <DeleteIcon class="w-8 h-8" />
+                </span>
+              </span>
+            </div>
+            <div class="text-lg" v-else>
               <span v-if="tweet.user.isFollowing">Following</span>
               <span
                 v-else
@@ -154,6 +172,8 @@
 
 <script>
 import Loader from "@/components/Loader.vue";
+import EditIcon from "@/components/EditIcon.vue";
+import DeleteIcon from "@/components/DeleteIcon.vue";
 
 export default {
   data() {
@@ -175,6 +195,8 @@ export default {
   },
   components: {
     Loader,
+    EditIcon,
+    DeleteIcon,
   },
   computed: {
     allTweets() {
@@ -254,6 +276,21 @@ export default {
           this.tweets.push(...res.data.data);
           this.$store.dispatch("tweets", this.tweets);
           this.pagination = res.data.meta;
+        })
+        .catch((err) => {
+          this.$notification(err.message, "error");
+        })
+        .finally(() => {
+          this.apiResponsed = true;
+        });
+    },
+
+    deleteTweet(id) {
+      this.apiResponsed = false;
+      this.$http
+        .delete(this.$api(`api/tweet/${id}`))
+        .then((res) => {
+          this.$notification(res.data.message, res.data.success);
         })
         .catch((err) => {
           this.$notification(err.message, "error");
