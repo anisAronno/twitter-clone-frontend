@@ -103,46 +103,14 @@ export default {
   data() {
     return {
       isLoading: false,
-      user: {
-        id: "",
-        name: "",
-        email: "",
-        image: "",
-        username: "",
-        tweets_count: 0,
-        followers_count: 0,
-        following_count: 0,
-        isFollowing: false,
-        created_at: "",
-      },
     };
   },
-  mounted() {
-    this.fetchUser();
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    },
   },
   methods: {
-    fetchUser() {
-      this.$http
-        .get(this.$api("api/profile"))
-        .then((response) => {
-          if (response.data) {
-            this.user = response.data.data;
-            this.isLoading = true;
-          } else {
-            this.$notification(response.data.message, response.data.success);
-          }
-        })
-        .catch((error) => {
-          this.$notification(
-            error?.response?.data
-              ? error?.response?.data?.message
-              : error?.message ?? "The given data was invalid!"
-          );
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
     submitAvatar(event) {
       const config = {
         headers: {

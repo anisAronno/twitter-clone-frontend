@@ -232,9 +232,13 @@ export default {
         .post(this.$api("api/follow"), { following_id: user.id })
         .then((res) => {
           if (res.data.success) {
-            this.tweets = [];
-            this.page = 1;
-            this.fetchTweets();
+            let data = this.allTweets.map((item) => {
+              if (item.user.id === user.id) {
+                item.user.isFollowing = true;
+              }
+              return item;
+            });
+            this.$store.dispatch("tweets", data);
             this.$notification(res.data.message, res.data.success);
           } else {
             this.$notification(res.data.message, res.data.success);
@@ -250,9 +254,7 @@ export default {
         .post(this.$api(`api/react/${tweetID}`), { react: react })
         .then((res) => {
           if (res.data.success) {
-            this.tweets = [];
-            this.page = 1;
-            this.fetchTweets();
+            this.updateTweetReaction(this.allTweets, tweetID, react);
             this.$notification(res.data.message, res.data.success);
           } else {
             this.$notification(res.data.message, res.data.success);
@@ -290,6 +292,13 @@ export default {
       this.$http
         .delete(this.$api(`api/tweet/${id}`))
         .then((res) => {
+          let data = this.allTweets.filter((item) => item.id !== id);
+          this.$store.dispatch("tweets", data);
+
+          let userData = this.auth;
+          userData.tweets_count = Number(userData.tweets_count) - 1;
+          this.$store.dispatch("updateUser", { data: userData });
+
           this.$notification(res.data.message, res.data.success);
         })
         .catch((err) => {
@@ -333,6 +342,30 @@ export default {
     showReactComponent(id = "") {
       this.reactionID = "";
       this.reactComponentID = id;
+    },
+
+    updateTweetReaction(tweets, tweetId, newReaction) {
+      const tweet = tweets.find((t) => t.id === tweetId);
+
+      const currentReaction = tweet.user_reactions[0]; 
+
+      if (currentReaction) {
+        tweet.user_reactions[0] = newReaction;
+
+        if (tweet.reaction_count[currentReaction]) {
+          tweet.reaction_count[currentReaction]--;
+          if (tweet.reaction_count[currentReaction] === 0) {
+            delete tweet.reaction_count[currentReaction];
+          }
+        }
+
+        tweet.reaction_count[newReaction] =
+          (tweet.reaction_count[newReaction] || 0) + 1;
+      } else {
+        tweet.user_reactions.push(newReaction);
+        tweet.reaction_count[newReaction] = 1;
+        tweet.total_reactions++;
+      }
     },
   },
 };

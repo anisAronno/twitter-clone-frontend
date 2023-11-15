@@ -47,7 +47,7 @@ export default new Vuex.Store({
     },
 
     
-  }, // getters
+  },  
 
   mutations: {
     authenticate(state, payload) {
@@ -117,7 +117,7 @@ export default new Vuex.Store({
     },
  
 
-  }, // mutations
+  },  
 
   actions: {
 

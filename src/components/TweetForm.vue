@@ -26,14 +26,21 @@ export default {
       content: "",
     };
   },
-
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    },
+  },
   methods: {
     submitTweet() {
       this.$http
         .post(this.$api("api/tweet"), { content: this.content })
         .then((res) => {
-          if (res.data.success) {
+          if (res.status == 201) {
             this.content = "";
+            let userData = this.user;
+            userData.tweets_count = Number(userData.tweets_count) + 1;
+            this.$store.dispatch("updateUser", { data: userData });
             this.$notification(res.data.message, res.data.success);
           } else {
             this.$notification(res.data.message, res.data.success);

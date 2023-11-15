@@ -12,7 +12,7 @@
       <div class="md:w-60" v-if="$route.name == 'home'"><Search /></div>
     </div>
     <div class="col-span-3">
-      <TweetForm />
+      <TweetForm v-if="$route.name == 'home'" />
     </div>
     <div class="flex col-span-5 gap-5 pr-3 justify-end">
       <DarkMode></DarkMode>
@@ -22,8 +22,8 @@
           @click="toggleDropdown"
         >
           <img
-            v-if="user.image"
-            :src="user.image"
+            v-if="user?.image"
+            :src="user?.image"
             alt="Logo"
             class="w-8 h-8 rounded-full ring-1 ring-[#7CA2FF] ring-offset-2"
           />

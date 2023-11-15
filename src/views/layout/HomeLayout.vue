@@ -29,7 +29,7 @@ export default {
     project() {
       return this.$store.getters.project;
     },
-  }, // computed
+  },  
 
   methods: {
     fetchProject(slug) {
