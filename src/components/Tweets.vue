@@ -1,5 +1,5 @@
 <template>
-  <div class="p-1 relative min-w-full !mb-20 md:mb-0">
+  <div class="p-1 relative min-w-full !mb-20 md:mb-0 font-sans no-select">
     <div v-if="Object.keys(allTweets).length > 0 && apiResponsed">
       <div
         v-if="
@@ -30,6 +30,8 @@
         v-for="tweet in allTweets"
         :key="tweet.id"
         class="space-y-2 mb-10 p-2"
+        :id="`tweet-${tweet.id}`"
+        ref="reactArea"
       >
         <div class="flex justify-start items-center gap-3">
           <img
@@ -41,7 +43,7 @@
             <router-link
               :to="{ name: 'userProfile', params: { id: tweet.user.id } }"
               class="text-lg text-blue-500 font-medium"
-              >{{ tweet.user.name }}</router-link
+              >{{ tweet.user.name }} {{ reactComponentID }}</router-link
             >
             <div v-if="tweet.user?.id == auth?.id">
               <span
@@ -78,7 +80,7 @@
             class="relative"
             @mouseleave="
               () => {
-                removeReactions();
+                hideReactionCount();
                 showReactComponent();
               }
             "
@@ -94,17 +96,20 @@
                   v-if="tweet.user_reactions?.length > 0"
                   class="text-red-400 text-2xl"
                   @click="removeReact(tweet.id)"
+                  @touchstart.prevent="handleTouchStart(tweet.id)"
+                  @touchend.prevent="handleTouchEnd(tweet.id)"
                   v-html="tweet.user_reactions[0] + ' :'"
                 >
                 </span>
-                <span v-else>React: </span>
+                <span v-else><button>React:</button> </span>
               </span>
               <span
                 class="text-lime-500 cursor-pointer"
-                @mouseover="showReactions(tweet.id)"
+                @mouseover="showReactionsCount(tweet.id)"
                 >{{ tweet.total_reactions }}</span
               >
             </p>
+
             <div
               class="transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 z-10 absolute bottom-6 left-5 bg-gray-700 max-w-min p-2 rounded-sm"
               v-if="
@@ -157,9 +162,9 @@
     <div
       v-else
       :class="{
-        'fixed top-0 left-0 right-0 bottom-0 w-full max-h-screen z-50 overflow-hidden bg-gray-900 opacity-75 flex flex-col items-center justify-center':
+        'fixed top-0 left-0 right-0 bottom-0 w-full max-h-screen z-20 overflow-hidden bg-gray-900 opacity-75 flex flex-col items-center justify-center':
           page === 1,
-        'fixed bottom-0 left-0 w-full z-50 bg-black bg-opacity-50 flex justify-center items-center':
+        'fixed bottom-0 left-0 w-full z-20 bg-black bg-opacity-50 flex justify-center items-center':
           page !== 1,
       }"
     >
@@ -185,6 +190,8 @@ export default {
       reactComponentID: "",
       noMoreTweets: "",
       page: 1,
+      touchTimer: null,
+      touchHeld: false,
     };
   },
   props: {
@@ -214,9 +221,15 @@ export default {
   mounted() {
     this.fetchTweets();
     window.addEventListener("scroll", this.handleScroll);
+    window.addEventListener("scroll", this.checkFadeOut);
+    document.addEventListener("touchstart", this.handleDocumentTouchStart);
+    document.addEventListener("click", this.handleDocumentTouchStart);
   },
   beforeDestroy() {
     window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("scroll", this.checkFadeOut);
+    document.removeEventListener("touchstart", this.handleDocumentTouchStart);
+    document.removeEventListener("click", this.handleDocumentTouchStart);
   },
   watch: {
     searchingUserName(newValue, oldValue) {
@@ -227,6 +240,57 @@ export default {
   },
 
   methods: {
+    handleTouchStart(tweetId) {
+      this.touchHeld = false;
+      if (this.touchTimer) {
+        clearTimeout(this.touchTimer);
+      }
+      this.touchTimer = setTimeout(() => {
+        this.touchHeld = true;
+        this.showReactComponent(tweetId);
+      }, 500);
+    },
+
+    handleTouchEnd(tweetId) {
+      if (this.touchTimer) {
+        clearTimeout(this.touchTimer);
+      }
+      if (!this.touchHeld) {
+        this.removeReact(tweetId);
+      }
+    },
+
+    handleDocumentTouchStart(event) {
+      if (
+        Array.isArray(this.$refs.reactArea) &&
+        this.$refs.reactArea.length > 0 &&
+        Number(this.reactComponentID) > 0
+      ) {
+        const reactArea = this.$refs.reactArea[0];
+        if (reactArea instanceof Element) {
+          const isClickInsideReactArea = reactArea.contains(event.target);
+
+          if (!isClickInsideReactArea) {
+            this.hideReactComponent();
+          }
+        } else {
+          console.error("Invalid element type in this.$refs.reactArea");
+        }
+      } else {
+        console.error("No valid elements found in this.$refs.reactArea");
+      }
+    },
+
+    checkFadeOut() {
+      this.allTweets.forEach((tweet) => {
+        const element = document.getElementById(`tweet-${tweet.id}`);
+        if (element) {
+          const distanceFromTop = element.getBoundingClientRect().top;
+          const opacity = Math.min(1, Math.max(0.2, distanceFromTop / 100));
+          element.style.opacity = opacity;
+        }
+      });
+    },
     fetchTweets() {
       this.apiResponsed = false;
       this.$http
@@ -345,16 +409,23 @@ export default {
     removeSearchValue() {
       this.$store.dispatch("searchingUserName", "");
     },
-    showReactions(id = "") {
+
+    showReactionsCount(id = "") {
       this.reactComponentID = "";
       this.reactionID = id;
     },
-    removeReactions() {
+
+    hideReactionCount() {
       this.reactionID = "";
     },
+
     showReactComponent(id = "") {
       this.reactionID = "";
       this.reactComponentID = id;
+    },
+
+    hideReactComponent() {
+      this.reactComponentID = "";
     },
 
     updateTweetReaction(tweets, tweetId, newReaction = null) {
@@ -404,3 +475,11 @@ export default {
   },
 };
 </script>
+<style>
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+</style>
