@@ -121,7 +121,14 @@ export default {
               "Bearer " + response.data.access_token;
 
             this.$notification("Login successful.", response.data.success);
-            this.$router.push({ path: "/" });
+            if (
+              this.$route.query.redirect &&
+              this.$route.query.redirect != "/logout"
+            ) {
+              this.$router.push({ path: this.$route.query.redirect });
+            } else {
+              this.$router.push({ path: "/" });
+            }
           } else {
             this.$notification(response.data.message, response.data.success);
           }
