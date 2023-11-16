@@ -11,6 +11,7 @@
         rows="1"
         class="form-controll flex-none"
         v-model="content"
+        required
       ></textarea>
       <button
         type="submit"

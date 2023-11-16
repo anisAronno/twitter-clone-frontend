@@ -9,6 +9,6 @@ export default {
     },
   },
   server: {
-    port: 9999,
+    port: 3139,
   },
 }

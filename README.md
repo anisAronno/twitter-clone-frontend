@@ -38,7 +38,7 @@ To start the development server:
 npm run dev
 ```
 
-This will run the project in development mode and automatically open it in your default browser at `http://localhost:8080`.
+This will run the project in development mode and automatically open it in your default browser at `http://localhost:3139`.
 
 ### Production Build
 
@@ -54,5 +54,3 @@ This command compiles and minifies the project for production deployment. The pr
 
 - `src/`: Contains the main source code files.
 - `public/`: Holds static assets.
-
- 

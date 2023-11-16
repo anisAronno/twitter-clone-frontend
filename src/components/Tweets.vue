@@ -40,7 +40,7 @@
           <div>
             <router-link
               :to="{ name: 'userProfile', params: { id: tweet.user.id } }"
-              class="text-lg"
+              class="text-lg text-blue-500 font-medium"
               >{{ tweet.user.name }}</router-link
             >
             <div v-if="tweet.user?.id == auth?.id">
@@ -48,7 +48,7 @@
                 class="flex justify-center items-center h-full heading gap-2"
               >
                 <router-link
-                  class="font-normal text-blue-600"
+                  class="font-normal text-blue-800"
                   :to="{ name: 'tweetEdit', params: { id: tweet.id } }"
                 >
                   <EditIcon class="w-6 h-6" />
@@ -61,12 +61,12 @@
                 </span>
               </span>
             </div>
-            <div class="text-lg" v-else>
+            <div class="text-sm" v-else>
               <span v-if="tweet.user.isFollowing">Following</span>
               <span
                 v-else
                 @click="follow(tweet.user)"
-                class="text-blue-600 cursor-pointer"
+                class="text-blue-600 text-sm font-normal cursor-pointer"
                 >Follow</span
               >
             </div>
@@ -83,16 +83,19 @@
               }
             "
           >
-            <p class="text-blue-500 flex gap-3">
+            <p
+              class="text-blue-500 flex items-center gap-3 font-medium text-md md:text-lg my-1"
+            >
               <span
                 class="cursor-pointer"
                 @mouseover="showReactComponent(tweet.id)"
               >
                 <span
                   v-if="tweet.user_reactions?.length > 0"
-                  class="text-red-600"
+                  class="text-red-400 text-2xl"
+                  @click="removeReact(tweet.id)"
+                  v-html="tweet.user_reactions[0] + ' :'"
                 >
-                  {{ tweet.user_reactions[0] + ":" }}
                 </span>
                 <span v-else>React: </span>
               </span>
@@ -114,28 +117,25 @@
                 v-for="(reaction, index) in tweet.reaction_count"
                 :key="reaction.react"
               >
-                <span class="text-white dark:text-white">
-                  {{ index }}
-                </span>
+                <span class="text-white dark:text-white" v-html="index"> </span>
                 <span class="text-blue-500"> ({{ reaction }})</span>
               </div>
             </div>
 
             <div
-              class="flex gap-2 text-red-500 absolute bottom-6 left-5 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 z-10"
+              class="flex items-center gap-3 text-red-500 absolute bottom-6 left-5 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 z-10 bg-gray-900 text-2xl p-3 rounded-xl"
               v-if="reactComponentID == tweet.id"
             >
               <p
                 v-for="(reactName, index) in tweet.reaction_arr"
                 :key="`${reactName.react}-${index}`"
-                class="bg-gray-400 py-0.25 px-2 rounded-sm"
               >
                 <span
                   class="cursor-pointer"
                   @click="submitReact(tweet.id, reactName)"
+                  v-html="reactName"
                 >
-                  {{ reactName }}</span
-                >
+                </span>
               </p>
             </div>
           </div>
@@ -227,47 +227,6 @@ export default {
   },
 
   methods: {
-    follow(user) {
-      this.$http
-        .post(this.$api("api/follow"), { following_id: user.id })
-        .then((res) => {
-          if (res.data.success) {
-            let data = this.allTweets.map((item) => {
-              if (item.user.id === user.id) {
-                item.user.isFollowing = true;
-              }
-              return item;
-            });
-            this.$store.dispatch("tweets", data);
-            this.$notification(res.data.message, res.data.success);
-          } else {
-            this.$notification(res.data.message, res.data.success);
-          }
-        })
-        .catch((err) => {
-          this.$notification(err.message, "error");
-        });
-    },
-
-    submitReact(tweetID, react) {
-      this.$http
-        .post(this.$api(`api/react/${tweetID}`), { react: react })
-        .then((res) => {
-          if (res.data.success) {
-            this.updateTweetReaction(this.allTweets, tweetID, react);
-            this.$notification(res.data.message, res.data.success);
-          } else {
-            this.$notification(res.data.message, res.data.success);
-          }
-        })
-        .catch((err) => {
-          this.$notification(err.message, "error");
-        })
-        .finally(() => {
-          this.reactComponentID = "";
-        });
-    },
-
     fetchTweets() {
       this.apiResponsed = false;
       this.$http
@@ -309,6 +268,60 @@ export default {
         });
     },
 
+    follow(user) {
+      this.$http
+        .post(this.$api("api/follow"), { following_id: user.id })
+        .then((res) => {
+          if (res.data.success) {
+            let data = this.allTweets.map((item) => {
+              if (item.user.id === user.id) {
+                item.user.isFollowing = true;
+              }
+              return item;
+            });
+            this.$store.dispatch("tweets", data);
+            this.$notification(res.data.message, res.data.success);
+          } else {
+            this.$notification(res.data.message, res.data.success);
+          }
+        })
+        .catch((err) => {
+          this.$notification(err.message, "error");
+        });
+    },
+
+    submitReact(tweetID, react) {
+      this.$http
+        .post(this.$api(`api/react/${tweetID}`), { react: react })
+        .then((res) => {
+          if (res.data.success) {
+            this.updateTweetReaction(this.allTweets, tweetID, react);
+          }
+        })
+        .catch((err) => {
+          this.$notification(err.message, "error");
+        })
+        .finally(() => {
+          this.reactComponentID = "";
+        });
+    },
+
+    removeReact(tweetID) {
+      this.$http
+        .post(this.$api(`api/remove-react/${tweetID}`))
+        .then((res) => {
+          if (res.data.success) {
+            this.updateTweetReaction(this.allTweets, tweetID);
+          }
+        })
+        .catch((err) => {
+          this.$notification(err.message, "error");
+        })
+        .finally(() => {
+          this.reactComponentID = "";
+        });
+    },
+
     handleScroll() {
       const bottomOffset = 100;
       const scrolledToBottom =
@@ -344,27 +357,48 @@ export default {
       this.reactComponentID = id;
     },
 
-    updateTweetReaction(tweets, tweetId, newReaction) {
+    updateTweetReaction(tweets, tweetId, newReaction = null) {
       const tweet = tweets.find((t) => t.id === tweetId);
 
-      const currentReaction = tweet.user_reactions[0]; 
+      if (newReaction === null) {
+        return this.removeTweetReact(tweet);
+      }
+
+      const currentReaction = tweet.user_reactions[0];
 
       if (currentReaction) {
         tweet.user_reactions[0] = newReaction;
 
-        if (tweet.reaction_count[currentReaction]) {
-          tweet.reaction_count[currentReaction]--;
-          if (tweet.reaction_count[currentReaction] === 0) {
-            delete tweet.reaction_count[currentReaction];
-          }
-        }
-
-        tweet.reaction_count[newReaction] =
-          (tweet.reaction_count[newReaction] || 0) + 1;
+        this.adjustReactionCount(tweet, currentReaction, -1);
+        this.adjustReactionCount(tweet, newReaction, 1);
       } else {
         tweet.user_reactions.push(newReaction);
-        tweet.reaction_count[newReaction] = 1;
+        this.adjustReactionCount(tweet, newReaction, 1);
         tweet.total_reactions++;
+      }
+    },
+
+    removeTweetReact(tweet) {
+      const currentReaction = tweet.user_reactions.shift();
+      if (currentReaction) {
+        this.adjustReactionCount(tweet, currentReaction, -1);
+        tweet.total_reactions--;
+      }
+    },
+
+    adjustReactionCount(tweet, reaction, change) {
+      if (!tweet.reaction_count[reaction]) {
+        if (change > 0) {
+          tweet.reaction_count[reaction] = 0;
+        } else {
+          return;
+        }
+      }
+
+      tweet.reaction_count[reaction] += change;
+
+      if (tweet.reaction_count[reaction] === 0) {
+        delete tweet.reaction_count[reaction];
       }
     },
   },

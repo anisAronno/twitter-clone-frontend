@@ -102,6 +102,11 @@ export default {
       },
     };
   },
+  computed: {
+    allTweets() {
+      return this.$store.getters.tweets;
+    },
+  },
   mounted() {
     this.fetchUser();
   },
@@ -132,9 +137,19 @@ export default {
       this.$http
         .post(this.$api("api/follow"), { following_id: id })
         .then((res) => {
-          if (res.data.success) {
+          if (res.status == 200) {
+            let data = this.allTweets.map((item) => {
+              if (item.user.id === this.user.id) {
+                item.user.isFollowing = true;
+              }
+              return item;
+            });
+
+            this.$store.dispatch("tweets", data);
+
             this.user.followers_count = Number(this.user?.followers_count) + 1;
             this.user.isFollowing = true;
+
             this.$notification(res.data.message, res.data.success);
           } else {
             this.$notification(res.data.message, res.data.success);
@@ -148,7 +163,17 @@ export default {
       this.$http
         .post(this.$api("api/unfollow"), { following_id: id })
         .then((res) => {
-          if (res.data.success) {
+          if (res.status == 200) {
+            
+            let data = this.allTweets.map((item) => {
+              if (item.user.id === this.user.id) {
+                item.user.isFollowing = false;
+              }
+              return item;
+            });
+
+            this.$store.dispatch("tweets", data);
+
             this.user.followers_count = Number(this.user?.followers_count) - 1;
             this.user.isFollowing = false;
             this.$notification(res.data.message, res.data.success);
