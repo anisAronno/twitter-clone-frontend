@@ -127,7 +127,7 @@ export default {
       }
 
       this.$http
-        .post(this.$api("api/password-reset"), this.resetPasswordForm)
+        .post(this.$api("/password-reset"), this.resetPasswordForm)
         .then((response) => {
           if (response.data.access_token) {
             this.isSaved = true;

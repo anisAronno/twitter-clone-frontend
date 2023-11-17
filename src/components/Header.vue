@@ -90,7 +90,7 @@ export default {
   methods: {
     logout() {
       this.$http
-        .post(this.$api("api/logout"), this.loginForm)
+        .post(this.$api("/logout"), this.loginForm)
         .then((response) => {
           this.$store.dispatch("logout");
           this.$notification("Logout successful.", response.data.success);

@@ -2,7 +2,7 @@
   <form @submit.prevent="searchSubmit">
     <label
       for="default-search"
-      class=" text-sm font-medium text-gray-900 sr-only dark:text-white"
+      class="text-sm font-medium text-gray-900 sr-only dark:text-white"
       >Search</label
     >
     <div class="relative">
@@ -73,6 +73,13 @@ export default {
     searchingUserName(newValue, oldValue) {
       if (newValue?.length == 0) {
         this.username = "";
+        this.$store.dispatch("searchingUserName", this.username);
+      }
+    },
+    username(newValue, oldValue) {
+      if (newValue?.length == 0) {
+        this.username = "";
+        this.$store.dispatch("searchingUserName", this.username);
       }
     },
   },

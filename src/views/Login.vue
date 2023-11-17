@@ -112,7 +112,7 @@ export default {
       }
 
       this.$http
-        .post(this.$api("api/login"), this.loginForm)
+        .post(this.$api("/login"), this.loginForm)
         .then((response) => {
           if (response.data.access_token) {
             this.isSaved = true;

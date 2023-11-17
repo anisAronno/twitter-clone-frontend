@@ -31,16 +31,12 @@
 
         <div class="flex justify-between w-full">
           <div>
-            <router-link
-              :to="{ name: 'login' }"
-              class="login-link font-medium"
+            <router-link :to="{ name: 'login' }" class="login-link font-medium"
               >Login</router-link
             >
           </div>
           <div>
-            <router-link
-              :to="{ name: 'signup' }"
-              class="login-link font-medium"
+            <router-link :to="{ name: 'signup' }" class="login-link font-medium"
               >Signup</router-link
             >
           </div>
@@ -83,7 +79,7 @@ export default {
       }
 
       this.$http
-        .post(this.$api("api/password-recover"), this.forgetPasswordForm)
+        .post(this.$api("/password-recover"), this.forgetPasswordForm)
         .then((response) => {
           if (response.data.access_token) {
             this.isSaved = true;

@@ -22,17 +22,18 @@
         </template>
         <template v-slot:footer>
           <button
+            type="button"
+            class="mr-3 text-gray-100 bg-red-600 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-white focus:z-10 dark:bg-red-600 dark:text-gray-100 dark:border-gray-500 dark:hover:text-white dark:focus:ring-gray-600"
+            @click="closeModal"
+          >
+            Cancel
+          </button>
+
+          <button
             type="submit"
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             Submit
-          </button>
-          <button
-            type="button"
-            class="ms-3 text-gray-100 bg-red-600 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-white focus:z-10 dark:bg-red-600 dark:text-gray-100 dark:border-gray-500 dark:hover:text-white dark:focus:ring-gray-600"
-            @click="closeModal"
-          >
-            Cancel
           </button>
         </template>
       </Modal>
@@ -60,7 +61,7 @@ export default {
         return;
       }
       this.$http
-        .post(this.$api("api/tweet"), { content: this.content })
+        .post(this.$api("/tweet"), { content: this.content })
         .then((res) => {
           if (res.status == 201) {
             this.content = "";

@@ -16,7 +16,7 @@ Vue.use(VueSweetalert2);
 Vue.use(VueAxios, axios);
 
 Vue.prototype.$api = function( endpoint ) {
-    return 'http://twitter.test/' + endpoint;
+    return 'http://twitter.test/api' + endpoint;
 };
 
 const token = localStorage.getItem("token");

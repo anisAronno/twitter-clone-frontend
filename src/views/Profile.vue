@@ -123,7 +123,7 @@ export default {
       formData.append("image", file, "image");
 
       this.$http
-        .post(this.$api("api/avatar-upload"), formData, config)
+        .post(this.$api("/avatar-upload"), formData, config)
         .then((response) => {
           if (response.data) {
             this.$store.dispatch("updateUser", response.data);

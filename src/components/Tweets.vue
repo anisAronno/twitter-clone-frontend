@@ -3,7 +3,7 @@
     class="p-1 relative min-w-full !mb-20 md:mb-0 font-sans no-select"
     :class="$route.name == 'home' ? 'mt-32 md:mt-20' : ''"
   >
-    <div v-if="Object.keys(allTweets).length > 0 && apiResponsed">
+    <div v-if="Object.keys(allTweets).length > 0">
       <div
         v-if="
           searchingUserName?.length > 0 &&
@@ -130,7 +130,7 @@
               "
             >
               <div
-                class="flex gap-2 relative"
+                class="flex gap-1 md:gap-2 relative"
                 v-for="(reaction, index) in tweet.reaction_count"
                 :key="reaction.react"
               >
@@ -140,7 +140,7 @@
             </div>
 
             <div
-              class="flex items-center gap-3 text-red-500 absolute bottom-6 left-5 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 z-10 bg-gray-900 text-2xl p-3 rounded-xl"
+              class="flex items-center gap-2 md:gap-3 text-red-500 absolute bottom-6 left-2 md:left-5 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 z-10 bg-gray-900 text-2xl p-3 rounded-xl"
               v-if="reactComponentID == tweet.id"
             >
               <p
@@ -167,6 +167,18 @@
       </div>
     </div>
     <div
+      v-else-if="
+        apiResponsed &&
+        Object.keys(allTweets).length == 0 &&
+        searchingUserName?.length > 0
+      "
+      class="h-full px-4 py-16 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8 text-red-600"
+    >
+      <p class="mx-auto max-w-max text-xl md:text-4xl">
+        {{ searchingUserName }} have no Tweets.
+      </p>
+    </div>
+    <div
       v-else-if="apiResponsed && Object.keys(allTweets).length == 0"
       class="h-full px-4 py-16 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8 text-red-600"
     >
@@ -174,12 +186,15 @@
     </div>
     <div
       v-else
-      :class="{
-        'fixed top-0 left-0 right-0 bottom-0 w-full max-h-screen z-20 overflow-hidden bg-gray-900 opacity-75 flex flex-col items-center justify-center':
-          page === 1,
-        'fixed bottom-0 left-0 w-full z-20  bg-opacity-50 flex justify-center items-center':
-          page !== 1,
-      }"
+      class="fixed top-0 left-0 right-0 bottom-0 w-full max-h-screen z-20 overflow-hidden bg-gray-900 opacity-75 flex flex-col items-center justify-center"
+    >
+      <span class="w-10 h-10">
+        <Loader></Loader>
+      </span>
+    </div>
+    <div
+      v-if="!apiResponsed && this.page != 1"
+      class="fixed bottom-0 left-0 w-full z-20 bg-opacity-50 flex justify-center items-center mt-3"
     >
       <span class="w-10 h-10">
         <Loader></Loader>
@@ -232,7 +247,10 @@ export default {
     },
   },
   mounted() {
+    this.page = 1;
+    this.tweets = [];
     this.fetchTweets();
+
     window.addEventListener("scroll", this.handleScroll);
     window.addEventListener("scroll", this.checkFadeOut);
     document.addEventListener("touchstart", this.handleDocumentTouchStart);
@@ -302,14 +320,20 @@ export default {
         }
       });
     },
+
     fetchTweets() {
       this.apiResponsed = false;
       this.$http
-        .get(this.$api("api/tweets"), {
+        .get(this.$api("/tweets"), {
           params: { username: this.searchingUserName, page: this.page },
         })
         .then((res) => {
-          this.tweets.push(...res.data.data);
+          const newTweets = res.data.data.filter((newTweet) => {
+            return !this.tweets.some(
+              (existingTweet) => existingTweet.id === newTweet.id
+            );
+          });
+          this.tweets.push(...newTweets);
           this.$store.dispatch("tweets", this.tweets);
           this.pagination = res.data.meta;
         })
@@ -322,30 +346,41 @@ export default {
     },
 
     deleteTweet(id) {
-      this.apiResponsed = false;
-      this.$http
-        .delete(this.$api(`api/tweet/${id}`))
-        .then((res) => {
-          let data = this.allTweets.filter((item) => item.id !== id);
-          this.$store.dispatch("tweets", data);
-
-          let userData = this.auth;
-          userData.tweets_count = Number(userData.tweets_count) - 1;
-          this.$store.dispatch("updateUser", { data: userData });
-
-          this.$notification(res.data.message, res.data.success);
+      this.$swal
+        .fire({
+          title: "Are you sure you want to delete this tweet?",
+          showCancelButton: true,
+          confirmButtonText: "Delete",
+          confirmButtonColor: "#d33",
         })
-        .catch((err) => {
-          this.$notification(err.message, "error");
-        })
-        .finally(() => {
-          this.apiResponsed = true;
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.apiResponsed = false;
+            this.$http
+              .delete(this.$api(`/tweet/${id}`))
+              .then((res) => {
+                let data = this.allTweets.filter((item) => item.id !== id);
+                this.$store.dispatch("tweets", data);
+
+                let userData = this.auth;
+                userData.tweets_count = Number(userData.tweets_count) - 1;
+                this.$store.dispatch("updateUser", { data: userData });
+
+                this.$notification(res.data.message, res.data.success);
+              })
+              .catch((err) => {
+                this.$notification(err.message, "error");
+              })
+              .finally(() => {
+                this.apiResponsed = true;
+              });
+          }
         });
     },
 
     follow(user) {
       this.$http
-        .post(this.$api("api/follow"), { following_id: user.id })
+        .post(this.$api("/follow"), { following_id: user.id })
         .then((res) => {
           if (res.data.success) {
             let data = this.allTweets.map((item) => {
@@ -367,7 +402,7 @@ export default {
 
     submitReact(tweetID, react) {
       this.$http
-        .post(this.$api(`api/react/${tweetID}`), { react: react })
+        .post(this.$api(`/react/${tweetID}`), { react: react })
         .then((res) => {
           if (res.data.success) {
             this.updateTweetReaction(this.allTweets, tweetID, react);
@@ -383,7 +418,7 @@ export default {
 
     removeReact(tweetID) {
       this.$http
-        .post(this.$api(`api/remove-react/${tweetID}`))
+        .post(this.$api(`/remove-react/${tweetID}`))
         .then((res) => {
           if (res.data.success) {
             this.updateTweetReaction(this.allTweets, tweetID);
@@ -410,6 +445,10 @@ export default {
       ) {
         this.page++;
         this.fetchTweets();
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
       } else if (scrolledToBottom && this.page === this.pagination.last_page) {
         this.noMoreTweets = true;
         setTimeout(() => {
@@ -417,7 +456,11 @@ export default {
         }, 3000);
       }
     },
+
     removeSearchValue() {
+      this.page = 1;
+      this.tweets = [];
+      this.fetchTweets();
       this.$store.dispatch("searchingUserName", "");
     },
 

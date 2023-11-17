@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid place-items-center pt-10 text-gray-900 bg-white dark:text-white dark:bg-gray-900 "
+    class="grid place-items-center pt-10 text-gray-900 bg-white dark:text-white dark:bg-gray-900"
     v-if="user.id"
   >
     <div class="sm:px-6">
@@ -103,7 +103,7 @@ export default {
     };
   },
   computed: {
-    allTweets() {
+    tweets() {
       return this.$store.getters.tweets;
     },
   },
@@ -113,7 +113,7 @@ export default {
   methods: {
     fetchUser() {
       this.$http
-        .get(this.$api(`api/user-profile/${this.$route.params.id}`))
+        .get(this.$api(`/user-profile/${this.$route.params.id}`))
         .then((response) => {
           if (response.data) {
             this.user = response.data.data;
@@ -135,10 +135,10 @@ export default {
     },
     follow(id) {
       this.$http
-        .post(this.$api("api/follow"), { following_id: id })
+        .post(this.$api("/follow"), { following_id: id })
         .then((res) => {
           if (res.status == 200) {
-            let data = this.allTweets.map((item) => {
+            let data = this.tweets.map((item) => {
               if (item.user.id === this.user.id) {
                 item.user.isFollowing = true;
               }
@@ -160,11 +160,25 @@ export default {
         });
     },
     unFollow(id) {
+      this.$swal
+        .fire({
+          title: "Do you want to unfollow this user?",
+          showCancelButton: true,
+          confirmButtonText: "Unfollow",
+          confirmButtonColor: "#d33",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.processUnFollow(id);
+          }
+        });
+    },
+    processUnFollow(id) {
       this.$http
-        .post(this.$api("api/unfollow"), { following_id: id })
+        .post(this.$api("/unfollow"), { following_id: id })
         .then((res) => {
           if (res.status == 200) {
-            let data = this.allTweets.map((item) => {
+            let data = this.tweets.map((item) => {
               if (item.user.id === this.user.id) {
                 item.user.isFollowing = false;
               }

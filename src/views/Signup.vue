@@ -1,5 +1,7 @@
 <template>
-  <div class="grid min-h-screen max-h-full place-items-center dark:bg-gray-900 mt-2">
+  <div
+    class="grid min-h-screen max-h-full place-items-center dark:bg-gray-900 mt-2"
+  >
     <div class="card max-w-md">
       <div class="w-full grid h-full place-items-center">
         <User class="avatar p-3 w-32"></User>
@@ -153,7 +155,7 @@ export default {
       }
 
       this.$http
-        .post(this.$api("api/register"), this.signupForm)
+        .post(this.$api("/register"), this.signupForm)
         .then((response) => {
           if (response.data.access_token) {
             this.isSaved = true;
