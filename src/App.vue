@@ -9,7 +9,7 @@
       </span>
     </div>
     <Header></Header>
-    <router-view @loaded="loaded" class="mt-32 md:mt-20"></router-view>
+    <router-view @loaded="loaded" class="mt-6 md:mt-10"></router-view>
   </div>
 </template>
 <script>

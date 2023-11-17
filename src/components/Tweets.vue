@@ -1,5 +1,8 @@
 <template>
-  <div class="p-1 relative min-w-full !mb-20 md:mb-0 font-sans no-select">
+  <div
+    class="p-1 relative min-w-full !mb-20 md:mb-0 font-sans no-select"
+    :class="$route.name == 'home' ? 'mt-32 md:mt-20' : ''"
+  >
     <div v-if="Object.keys(allTweets).length > 0 && apiResponsed">
       <div
         v-if="
@@ -31,7 +34,6 @@
         :key="tweet.id"
         class="space-y-2 mb-10 p-2"
         :id="`tweet-${tweet.id}`"
-        ref="reactArea"
       >
         <div class="flex justify-start items-center gap-3">
           <img
@@ -39,14 +41,32 @@
             :alt="tweet.user.name"
             class="w-12 h-12 rounded-full"
           />
-          <div>
-            <router-link
-              :to="{ name: 'userProfile', params: { id: tweet.user.id } }"
-              class="text-lg text-blue-500 font-medium"
-              >{{ tweet.user.name }} {{ reactComponentID }}</router-link
-            >
-            <div v-if="tweet.user?.id == auth?.id">
-              <span
+          <div class="w-full">
+            <div class="flex gap-2 md:gap-5 items-center justify-start">
+              <router-link
+                :to="{ name: 'userProfile', params: { id: tweet.user.id } }"
+                class="text-lg text-blue-500 font-medium"
+              >
+                {{ tweet.user.name }}
+              </router-link>
+              <span v-if="auth.id !== tweet.user.id">
+                <span
+                  v-if="tweet.user.isFollowing"
+                  class="btn-unFollow !text-md"
+                  >Following</span
+                >
+                <span
+                  v-else
+                  @click="follow(tweet.user)"
+                  class="text-md font-semibold cursor-pointer btn-follow !text-md"
+                  >Follow</span
+                >
+              </span>
+            </div>
+            <div class="flex items-center justify-start gap-3">
+              <p class="dark:text-gray-300">{{ tweet.created_at }}</p>
+              <div
+                v-if="tweet.user?.id == auth?.id"
                 class="flex justify-center items-center h-full heading gap-2"
               >
                 <router-link
@@ -61,16 +81,7 @@
                 >
                   <DeleteIcon class="w-8 h-8" />
                 </span>
-              </span>
-            </div>
-            <div class="text-sm" v-else>
-              <span v-if="tweet.user.isFollowing">Following</span>
-              <span
-                v-else
-                @click="follow(tweet.user)"
-                class="text-blue-600 text-sm font-normal cursor-pointer"
-                >Follow</span
-              >
+              </div>
             </div>
           </div>
         </div>
@@ -85,8 +96,9 @@
               }
             "
           >
-            <p
+            <div
               class="text-blue-500 flex items-center gap-3 font-medium text-md md:text-lg my-1"
+              ref="reactArea"
             >
               <span
                 class="cursor-pointer"
@@ -108,7 +120,7 @@
                 @mouseover="showReactionsCount(tweet.id)"
                 >{{ tweet.total_reactions }}</span
               >
-            </p>
+            </div>
 
             <div
               class="transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 z-10 absolute bottom-6 left-5 bg-gray-700 max-w-min p-2 rounded-sm"
@@ -137,6 +149,7 @@
               >
                 <span
                   class="cursor-pointer"
+                  id="reactContainer"
                   @click="submitReact(tweet.id, reactName)"
                   v-html="reactName"
                 >
@@ -164,7 +177,7 @@
       :class="{
         'fixed top-0 left-0 right-0 bottom-0 w-full max-h-screen z-20 overflow-hidden bg-gray-900 opacity-75 flex flex-col items-center justify-center':
           page === 1,
-        'fixed bottom-0 left-0 w-full z-20 bg-black bg-opacity-50 flex justify-center items-center':
+        'fixed bottom-0 left-0 w-full z-20  bg-opacity-50 flex justify-center items-center':
           page !== 1,
       }"
     >
@@ -223,13 +236,11 @@ export default {
     window.addEventListener("scroll", this.handleScroll);
     window.addEventListener("scroll", this.checkFadeOut);
     document.addEventListener("touchstart", this.handleDocumentTouchStart);
-    document.addEventListener("click", this.handleDocumentTouchStart);
   },
   beforeDestroy() {
     window.removeEventListener("scroll", this.handleScroll);
     window.removeEventListener("scroll", this.checkFadeOut);
     document.removeEventListener("touchstart", this.handleDocumentTouchStart);
-    document.removeEventListener("click", this.handleDocumentTouchStart);
   },
   watch: {
     searchingUserName(newValue, oldValue) {
@@ -261,23 +272,23 @@ export default {
     },
 
     handleDocumentTouchStart(event) {
-      if (
-        Array.isArray(this.$refs.reactArea) &&
-        this.$refs.reactArea.length > 0 &&
-        Number(this.reactComponentID) > 0
-      ) {
-        const reactArea = this.$refs.reactArea[0];
-        if (reactArea instanceof Element) {
-          const isClickInsideReactArea = reactArea.contains(event.target);
+      const reactArea = Array.isArray(this.$refs.reactArea)
+        ? this.$refs.reactArea[0]
+        : null;
 
-          if (!isClickInsideReactArea) {
-            this.hideReactComponent();
-          }
-        } else {
-          console.error("Invalid element type in this.$refs.reactArea");
+      if (reactArea instanceof Element) {
+        const clickedInsideButton =
+          event.target.tagName.toLowerCase() === "button";
+        const clickedInsideReactContainer =
+          event.target.id === "reactContainer";
+
+        if (clickedInsideButton || clickedInsideReactContainer) {
+          console.error("Clicked inside reaction container");
+        } else if (!reactArea.contains(event.target)) {
+          this.hideReactComponent();
         }
       } else {
-        console.error("No valid elements found in this.$refs.reactArea");
+        console.error("Invalid or no elements found.");
       }
     },
 

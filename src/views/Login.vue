@@ -46,7 +46,7 @@
               <input
                 id="remember"
                 type="checkbox"
-                value=""
+                v-model="loginForm.remember_me"
                 class="form-controll"
               />
             </div>
@@ -94,6 +94,7 @@ export default {
       loginForm: {
         email: "",
         password: "",
+        remember_me: false,
       },
       err: {},
     };

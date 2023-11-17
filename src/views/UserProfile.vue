@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid place-items-center pt-10 text-gray-900 bg-white dark:text-white dark:bg-gray-900"
+    class="grid place-items-center pt-10 text-gray-900 bg-white dark:text-white dark:bg-gray-900 "
     v-if="user.id"
   >
     <div class="sm:px-6">
@@ -37,13 +37,13 @@
       <span
         v-if="user.isFollowing"
         @click="unFollow(user.id)"
-        class="text-green-600 cursor-pointer bg-gray-300 px-4 py-1.5 rounded-xl font-medium"
+        class="btn-unFollow !text-xl cursor-pointer"
         >Following</span
       >
       <span
         v-else
         @click="follow(user.id)"
-        class="text-blue-600 cursor-pointer bg-gray-300 px-4 py-1.5 rounded-xl font-medium"
+        class="btn-follow !text-xl cursor-pointer"
         >Follow</span
       >
     </h1>
@@ -164,7 +164,6 @@ export default {
         .post(this.$api("api/unfollow"), { following_id: id })
         .then((res) => {
           if (res.status == 200) {
-            
             let data = this.allTweets.map((item) => {
               if (item.user.id === this.user.id) {
                 item.user.isFollowing = false;

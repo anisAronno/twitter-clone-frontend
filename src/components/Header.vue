@@ -1,20 +1,26 @@
 <template>
   <div
-    class="!min-w-full flex flex-wrap justify-between items-center gap-2 md:gap-5 max-h-fit md:h-20 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-white fixed top-0 w-full z-50 shadow-sm "
+    class="!min-w-full flex flex-wrap justify-between items-center gap-2 md:gap-5 max-h-fit md:h-20 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-white fixed top-0 w-full z-50 shadow-sm"
   >
-    <div class="logo md:flex-auto p-2 order-1">
+    <div class="logo md:flex-auto p-2 order-1 flex-auto">
       <router-link :to="{ name: 'home' }">
         <img class="w-12 h-12" src="@/assets/logo.png" alt="Logo" />
       </router-link>
     </div>
 
-    <div class="order-2 md:order-3">
-      <div class="w-44 md:w-60" v-if="$route.name == 'home'"><Search /></div>
-    </div>
     <div class="order-last md:order-2 flex-grow my-2 my:0">
       <TweetForm v-if="$route.name == 'home'" />
     </div>
-    <div class="flex order-3 md:order-4 gap-2 md:gap-5 pr-3 justify-end">
+
+    <div class="order-2 md:order-3 flex-auto">
+      <div class="w-32 sm:w-40 md:w-60" v-if="$route.name == 'home'">
+        <Search />
+      </div>
+    </div>
+    <div
+      class="flex order-3 md:order-4 gap-2 md:gap-5 pr-3 justify-end item"
+      :class="$route.name != 'home' ? '-mr-20 sm:mr-0' : ''"
+    >
       <DarkMode></DarkMode>
       <div v-if="$store.getters.isAuthenticated">
         <div
