@@ -86,7 +86,29 @@
           </div>
         </div>
         <div class="p-2">
-          <p>{{ tweet.content }}</p>
+          <div class="mb-2">
+            <div
+              v-if="!showFullContent[tweet.id] && tweet.content.length > 200"
+            >
+              <span v-html="tweet.content.slice(0, 200) + '... '"></span>
+              <span
+                @click="toggleShowContent(tweet.id)"
+                class="text-blue-600 cursor-pointer text-sm"
+                >Show More</span
+              >
+            </div>
+            <div v-else-if="showFullContent[tweet.id]">
+              <span v-html="tweet.content + ' '"></span>
+              <span
+                @click="toggleShowContent(tweet.id)"
+                class="text-blue-600 cursor-pointer text-sm"
+                >Show Less</span
+              >
+            </div>
+            <p v-else>
+              {{ tweet.content }}
+            </p>
+          </div>
           <div
             class="relative"
             @mouseleave="
@@ -220,6 +242,7 @@ export default {
       page: 1,
       touchTimer: null,
       touchHeld: false,
+      showFullContent: {},
     };
   },
   props: {
@@ -252,12 +275,10 @@ export default {
     this.fetchTweets();
 
     window.addEventListener("scroll", this.handleScroll);
-    window.addEventListener("scroll", this.checkFadeOut);
     document.addEventListener("touchstart", this.handleDocumentTouchStart);
   },
   beforeDestroy() {
     window.removeEventListener("scroll", this.handleScroll);
-    window.removeEventListener("scroll", this.checkFadeOut);
     document.removeEventListener("touchstart", this.handleDocumentTouchStart);
   },
   watch: {
@@ -269,6 +290,9 @@ export default {
   },
 
   methods: {
+    toggleShowContent(tweetId) {
+      this.$set(this.showFullContent, tweetId, !this.showFullContent[tweetId]);
+    },
     handleTouchStart(tweetId) {
       this.touchHeld = false;
       if (this.touchTimer) {
@@ -308,17 +332,6 @@ export default {
       } else {
         console.error("Invalid or no elements found.");
       }
-    },
-
-    checkFadeOut() {
-      this.allTweets.forEach((tweet) => {
-        const element = document.getElementById(`tweet-${tweet.id}`);
-        if (element) {
-          const distanceFromTop = element.getBoundingClientRect().top;
-          const opacity = Math.min(1, Math.max(0.7, distanceFromTop / 100));
-          element.style.opacity = opacity;
-        }
-      });
     },
 
     fetchTweets() {
