@@ -52,7 +52,7 @@
               <span v-if="auth.id !== tweet.user.id">
                 <span
                   v-if="tweet.user.isFollowing"
-                  class="btn-unFollow !text-md"
+                  class="!text-md text-gray-700 dark:text-gray-300"
                   >Following</span
                 >
                 <span
@@ -130,7 +130,7 @@
               "
             >
               <div
-                class="flex gap-1 md:gap-2 relative"
+                class="flex gap-1 md:gap-2 relative text-md md:text-xl"
                 v-for="(reaction, index) in tweet.reaction_count"
                 :key="reaction.react"
               >
@@ -315,7 +315,7 @@ export default {
         const element = document.getElementById(`tweet-${tweet.id}`);
         if (element) {
           const distanceFromTop = element.getBoundingClientRect().top;
-          const opacity = Math.min(1, Math.max(0.2, distanceFromTop / 100));
+          const opacity = Math.min(1, Math.max(0.7, distanceFromTop / 100));
           element.style.opacity = opacity;
         }
       });
@@ -453,7 +453,7 @@ export default {
         this.noMoreTweets = true;
         setTimeout(() => {
           this.noMoreTweets = false;
-        }, 3000);
+        }, 1000);
       }
     },
 

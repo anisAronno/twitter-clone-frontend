@@ -38,7 +38,7 @@
         v-if="user.isFollowing"
         @click="unFollow(user.id)"
         class="btn-unFollow !text-xl cursor-pointer"
-        >Following</span
+        >Unfollow</span
       >
       <span
         v-else

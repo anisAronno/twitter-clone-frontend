@@ -54,12 +54,12 @@ new Vue({
       
     var vm = this;
     this.$http.interceptors.response.use(undefined, function(error) {
-      if (error.response.status === 401) {
+      if (error.response?.status === 401) {
         vm.$store.dispatch("logout");  
         router.push("/login");
-      } else if (error.response.status === 403) {
+      } else if (error.response?.status === 403) {
         router.push("/forbidden");
-      } else if (error.response.status >= 500 && error.response.status !== 503) {
+      } else if (error.response?.status >= 500 && error.response?.status !== 503) {
         vm.$notification.error('Unknown error occurred.');
       }
 
