@@ -132,7 +132,7 @@ export default {
 
       this.$http
         .post(
-          this.$api(`/password-update/${this.passwordForm.id}`),
+          this.$api(`/password-update/${this.passwordForm.username}`),
           this.passwordForm
         )
         .then((response) => {

@@ -44,7 +44,10 @@
           <div class="w-full">
             <div class="flex gap-2 md:gap-5 items-center justify-start">
               <router-link
-                :to="{ name: 'userProfile', params: { id: tweet.user.id } }"
+                :to="{
+                  name: 'userProfile',
+                  params: { username: tweet.user.username },
+                }"
                 class="text-lg text-blue-500 font-medium"
               >
                 {{ tweet.user.name }}
@@ -71,12 +74,12 @@
               >
                 <router-link
                   class="font-normal text-blue-800"
-                  :to="{ name: 'tweetEdit', params: { id: tweet.id } }"
+                  :to="{ name: 'tweetEdit', params: { slug: tweet.slug } }"
                 >
                   <EditIcon class="w-6 h-6" />
                 </router-link>
                 <span
-                  @click="deleteTweet(tweet.id)"
+                  @click="deleteTweet(tweet.slug)"
                   class="font-normal text-blue-600 cursor-pointer"
                 >
                   <DeleteIcon class="w-8 h-8" />
@@ -344,6 +347,7 @@ export default {
               (existingTweet) => existingTweet.id === newTweet.id
             );
           });
+
           this.tweets.push(...newTweets);
           this.$store.dispatch("tweets", this.tweets);
           this.pagination = res.data.meta;
@@ -356,7 +360,7 @@ export default {
         });
     },
 
-    deleteTweet(id) {
+    deleteTweet(slug) {
       this.$swal
         .fire({
           title: "Are you sure you want to delete this tweet?",
@@ -368,9 +372,9 @@ export default {
           if (result.isConfirmed) {
             this.apiResponsed = false;
             this.$http
-              .delete(this.$api(`/tweet/${id}`))
+              .delete(this.$api(`/tweet/${slug}`))
               .then((res) => {
-                let data = this.allTweets.filter((item) => item.id !== id);
+                let data = this.allTweets.filter((item) => item.slug !== slug);
                 this.$store.dispatch("tweets", data);
 
                 let userData = this.auth;
@@ -471,8 +475,8 @@ export default {
     removeSearchValue() {
       this.page = 1;
       this.tweets = [];
-      this.fetchTweets();
       this.$store.dispatch("searchingUserName", "");
+      this.fetchTweets();
     },
 
     showReactionsCount(id = "") {

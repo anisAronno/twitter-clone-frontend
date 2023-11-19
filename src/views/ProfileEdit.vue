@@ -125,7 +125,7 @@ export default {
     profileSubmit() {
       this.isLoading = false;
       this.$http
-        .post(this.$api(`/profile-update/${this.userData.id}`), this.userData)
+        .post(this.$api(`/profile-update/${this.userData.username}`), this.userData)
         .then((response) => {
           if (response.data) {
             this.$store.dispatch("updateUser", response.data);

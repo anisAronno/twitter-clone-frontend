@@ -85,7 +85,7 @@ const router = new VueRouter({
                 },
               },  
               {
-                path: '/profile/:id',
+                path: '/profile/:username',
                 name: 'userProfile',
                 component: UserProfile,
                 meta: {
@@ -93,7 +93,7 @@ const router = new VueRouter({
                 },
               },  
               {
-                path: '/tweet/:id',
+                path: '/tweet/:slug',
                 name: 'tweetEdit',
                 component: TweetEdit,
                 meta: {

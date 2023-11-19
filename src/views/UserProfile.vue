@@ -113,7 +113,7 @@ export default {
   methods: {
     fetchUser() {
       this.$http
-        .get(this.$api(`/user-profile/${this.$route.params.id}`))
+        .get(this.$api(`/user-profile/${this.$route.params.username}`))
         .then((response) => {
           if (response.data) {
             this.user = response.data.data;

@@ -66,6 +66,7 @@ export default {
       tweet: {
         id: "",
         content: "",
+        slug: "",
       },
       err: {},
     };
@@ -78,7 +79,7 @@ export default {
     fetchTweet() {
       this.isLoading = false;
       this.$http
-        .get(this.$api(`/tweet/${this.$route.params.id}`))
+        .get(this.$api(`/tweet/${this.$route.params.slug}`))
         .then((response) => {
           if (response.data) {
             this.tweet = response.data.data;
@@ -100,7 +101,7 @@ export default {
     },
     tweetSubmit() {
       this.$http
-        .put(this.$api(`/tweet/${this.tweet.id}`), this.tweet)
+        .put(this.$api(`/tweet/${this.tweet.slug}`), this.tweet)
         .then((response) => {
           if (response.data) {
             this.isLoading = true;
