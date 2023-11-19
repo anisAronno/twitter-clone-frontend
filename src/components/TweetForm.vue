@@ -1,10 +1,17 @@
 <template>
   <div class="grid place-items-center">
-    <form @submit.prevent="submitTweet">
+    <form
+      @submit.prevent="submitTweet"
+      :class="
+        $route.name === 'profile'
+          ? 'w-[120px] md:w-[300px] xl:w-[500px]'
+          : 'w-[250px] md:w-[300px] xl:w-[500px]'
+      "
+    >
       <input
         type="text"
         readonly
-        class="form-controll w-[400px] md:w-[300px] xl:w-[500px] !rounded-xl"
+        class="form-controll !rounded-xl"
         @click="showModal = true"
         placeholder="Post Tweet"
       />
@@ -54,6 +61,13 @@ export default {
   components: {
     Modal,
   },
+
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    },
+  },
+
   methods: {
     submitTweet() {
       if (!this.content || this.content.trim().length === 0) {
@@ -68,6 +82,11 @@ export default {
             let userData = this.user;
             userData.tweets_count = Number(userData.tweets_count) + 1;
             this.$store.dispatch("updateUser", { data: userData });
+
+            let data = this.$store.getters.tweets;
+            data.unshift(res.data.data);
+            this.$store.dispatch("tweets", data);
+
             this.$notification(res.data.message, res.data.success);
           } else {
             this.$notification(res.data.message, res.data.success);
@@ -80,11 +99,6 @@ export default {
     },
     closeModal() {
       this.showModal = false;
-    },
-  },
-  computed: {
-    user() {
-      return this.$store.getters.user;
     },
   },
 };

@@ -37,8 +37,8 @@
       >
         <div class="flex justify-start items-center gap-3">
           <img
-            :src="tweet.user.image"
-            :alt="tweet.user.name"
+            :src="tweet.user?.image"
+            :alt="tweet.user?.name"
             class="w-12 h-12 rounded-full"
           />
           <div class="w-full">

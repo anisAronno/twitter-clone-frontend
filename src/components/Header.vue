@@ -9,7 +9,7 @@
     </div>
 
     <div class="order-last md:order-2 flex-grow my-2 my:0">
-      <TweetForm v-if="$route.name == 'home'" />
+      <TweetForm v-if="$route.name == 'home' || $route.name === 'profile'" />
     </div>
 
     <div class="order-2 md:order-3 flex-auto">
@@ -19,7 +19,10 @@
     </div>
     <div
       class="flex order-3 md:order-4 gap-2 md:gap-5 pr-3 justify-end item"
-      :class="$route.name != 'home' ? '-mr-20 sm:mr-0' : ''"
+      :class="{
+        '-mr-20 sm:mr-0': $route.name != 'home',
+        '-mr-0 sm:mr-0 !order-last md:order-4': $route.name === 'profile',
+      }"
     >
       <DarkMode></DarkMode>
       <div v-if="$store.getters.isAuthenticated">
