@@ -165,15 +165,13 @@
               class="flex items-center gap-2 md:gap-3 text-red-500 absolute bottom-6 left-2 md:left-5 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 z-10 bg-gray-900 text-2xl p-3 rounded-xl"
               v-if="reactComponentID == tweet.id"
             >
-              <p
-                v-for="(reactName, index) in tweet.reaction_arr"
-                :key="`${reactName.react}-${index}`"
-              >
+              <p v-for="reactName in tweet.reaction_arr" :key="reactName.name">
                 <span
-                  class="cursor-pointer"
+                  class="cursor-pointer react-name"
                   id="reactContainer"
-                  @click="submitReact(tweet.id, reactName)"
-                  v-html="reactName"
+                  @click="submitReact(tweet.id, reactName.emoji)"
+                  v-html="reactName.emoji"
+                  :title="reactName.name"
                 >
                 </span>
               </p>
@@ -548,5 +546,38 @@ export default {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.react-name {
+  transition: transform 0.3s ease-in-out, font-size 0.3s ease-in-out;
+  position: relative;
+}
+
+.react-name:hover {
+  font-size: 130%;
+}
+.react-name::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 3px 5px;
+  line-height: 1;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 9999;
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.3s linear;
+  text-transform: capitalize;
+}
+
+.react-name:hover::after {
+  visibility: visible;
+  opacity: 1;
 }
 </style>
