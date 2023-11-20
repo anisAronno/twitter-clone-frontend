@@ -18,7 +18,7 @@
       </div>
     </div>
     <div
-      class="flex order-3 md:order-4 gap-2 md:gap-5 pr-3 justify-end item"
+      class="flex order-3 md:order-4 gap-2 md:gap-5 pr-3 justify-end item z-40"
       :class="{
         '-mr-20 sm:mr-0': $route.name != 'home',
         '-mr-0 sm:mr-0 !order-last md:order-4': $route.name === 'profile',

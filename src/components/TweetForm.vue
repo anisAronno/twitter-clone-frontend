@@ -15,7 +15,7 @@
         @click="showModal = true"
         placeholder="Post Tweet"
       />
-      <Modal v-if="showModal" @close="closeModal" :title="modalTitle">
+      <Modal v-if="showModal" @close="closeModal" :title="modalTitle" class="!mt-16">
         <template v-slot:body>
           <textarea
             name="content"
@@ -68,6 +68,13 @@ export default {
     },
   },
 
+  watch: {
+    $route(to, from) {
+      if (to.fullPath !== from.fullPath) {
+        this.showModal = false;
+      }
+    },
+  },
   methods: {
     submitTweet() {
       if (!this.content || this.content.trim().length === 0) {
