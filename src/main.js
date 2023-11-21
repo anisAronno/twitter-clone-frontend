@@ -16,7 +16,7 @@ Vue.use(VueSweetalert2);
 Vue.use(VueAxios, axios);
 
 Vue.prototype.$api = function( endpoint ) {
-    return 'http://twitter.test/api' + endpoint;
+    return 'https://api.asulsis.com/api' + endpoint;
 };
 
 const token = localStorage.getItem("token");
@@ -48,7 +48,7 @@ new Vue({
     Vue.prototype.$notification = function(message, success = true) {
         return toaster.fire({
         icon: success? 'success': 'error',
-        title: message,
+        title: message??'Something went wrong!',
         });
     };
       

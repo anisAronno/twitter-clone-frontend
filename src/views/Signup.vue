@@ -157,7 +157,7 @@ export default {
       this.$http
         .post(this.$api("/register"), this.signupForm)
         .then((response) => {
-          if (response.data.access_token) {
+          if (response.status == 200) {
             this.isSaved = true;
 
             this.$store.dispatch("login", response.data);

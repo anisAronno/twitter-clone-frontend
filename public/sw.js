@@ -1,4 +1,4 @@
-const cacheName = "twitter-clone-v2";
+const cacheName = "twitter-clone-v4";
 const staticAssets = [
   "/",
   "./offline.html", 

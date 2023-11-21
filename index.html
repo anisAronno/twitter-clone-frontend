@@ -27,7 +27,7 @@
     <link rel="apple-touch-icon" href="192.png" />
     <link rel="manifest" href="./manifest.json" />
 
-    <title>Tweeter</title>
+    <title>Twitter</title>
   </head>
   <body class="bg-white dark:bg-gray-900">
     <div id="app" class="font-sans"></div>
@@ -43,21 +43,21 @@
         document.documentElement.classList.remove("dark");
       }
 
-    //   if ("serviceWorker" in navigator) {
-    //     window.addEventListener("load", () => {
-    //       navigator.serviceWorker
-    //         .register("/sw.js")
-    //         .then((registration) => {
-    //           console.log(
-    //             "Service Worker registered with scope:",
-    //             registration.scope
-    //           );
-    //         })
-    //         .catch((error) => {
-    //           console.error("Service Worker registration failed:", error);
-    //         });
-    //     });
-    //   }
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((registration) => {
+              console.log(
+                "Service Worker registered with scope:",
+                registration.scope
+              );
+            })
+            .catch((error) => {
+              console.error("Service Worker registration failed:", error);
+            });
+        });
+      }
     </script>
   </body>
 </html>

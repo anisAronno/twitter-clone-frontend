@@ -114,7 +114,7 @@ export default {
       this.$http
         .post(this.$api("/login"), this.loginForm)
         .then((response) => {
-          if (response.data.access_token) {
+          if (response.status == 200) {
             this.isSaved = true;
 
             this.$store.dispatch("login", response.data);
@@ -131,7 +131,7 @@ export default {
               this.$router.push({ path: "/" });
             }
           } else {
-            this.$notification(response.data.message, response.data.success);
+            this.$notification("Wrong Credential!", response.data.success);
           }
         })
         .catch((error) => {
