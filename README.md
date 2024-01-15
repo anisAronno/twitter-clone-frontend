@@ -6,7 +6,7 @@ This repository contains the frontend codebase for the Twitter Clone project, de
 
 ## Backend Repository
 
-The corresponding backend repository for this project can be found [here](https://github.com/anisAronno/twitter-backend). The backend serves as the API provider and database handler for this frontend application.
+The corresponding backend repository for this project can be found [here](https://github.com/anisAronno/twitter-clone-api). The backend serves as the API provider and database handler for this frontend application.
 
 ## Getting Started
 
